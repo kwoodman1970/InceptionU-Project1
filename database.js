@@ -101,7 +101,7 @@ users.delete = function(userId)
 
         this[index] = null;
 
-        this(requestsForHelp);
+        trimArray(this);
 
         return true;
     }
@@ -177,8 +177,8 @@ requestsForHelp.delete = function(userIndex, topic)
 
     this[index] = null;
 
-    trimArray(this);
     trimArray(offersOfHelp);
+    trimArray(this);
 }
 
 // Offers of help CRUD
@@ -237,6 +237,7 @@ offersOfHelp.delete = function(userIndex, requestIndex)
     offersOfHelp[index] = null;
 }
 
+/*
 console.log(users[0]);
 console.log(requestsForHelp[0]);
 console.log(offersOfHelp[0]);
@@ -245,3 +246,4 @@ console.log("Deleting user...");
 users.delete("Noah E. Tall");
 console.log(requestsForHelp[0]);
 console.log(offersOfHelp[0]);
+*/

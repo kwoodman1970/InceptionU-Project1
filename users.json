@@ -3,16 +3,17 @@
         "id": "Noah E. Tall",
         "phone": "403-555-5000",
         "email": "noahtall@utopia.com",
-        "topcsCanHelpWith": [],
-        "requestsForHelp": [],
-        "offersOfHelp": []
+        "topicsCanHelpWith": [
+            "Personal Finances",
+            "Pet Care",
+            "Piano Playing",
+            "Elbonian Cuisine"
+        ]
     },
     {
         "id": "Anita Hand",
         "phone": "403-555-5001",
         "email": "anitahand@null.com",
-        "topcsCanHelpWith": [],
-        "requestsForHelp": [],
-        "offersOfHelp": []
+        "topicsCanHelpWith": []
     }
 ]
