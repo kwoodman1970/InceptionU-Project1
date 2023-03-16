@@ -1,5 +1,7 @@
+//const directory = "/c/Projects/Project1/code/";
+const directory = "";
 const usersFilename = "users.json";
-const requestsForHelpFilename = "reqeusts.json";
+const requestsForHelpFilename = "requests.json";
 const offersOfHelpFilename = "offers.json";
 
 export let users = [];
@@ -8,16 +10,19 @@ export let offersOfHelp = [];
 
 import fs from "fs";
 
-users = JSON.stringify(fs.readFileSync(usersFilename));
-requestsForHelp = JSON.stringify(fs.readFileSync(requestsForHelpFilename));
-offersOfHelp = JSON.stringify(fs.readFileSync(offersOfHelpFilename));
+users = JSON.parse(fs.readFileSync(directory + usersFilename));
+requestsForHelp = JSON.parse(fs.readFileSync(directory + requestsForHelpFilename));
+offersOfHelp = JSON.parse(fs.readFileSync(directory + offersOfHelpFilename));
+
+function trimArray(array)
+{
+    let lastNonNullIndex = array.findLastIndex((element) => element !== null);
+
+    if (lastNonNullIndex >= 0)
+        array.splice(lastNonNullIndex + 1);
+}
 
 // Users CRUD
-
-users.getIndexOf = function(userId)
-{
-    return this.findIndex((element) => element.id === userId);
-};
 
 users.create = function(userInfo)
 {
@@ -42,6 +47,11 @@ users.create = function(userInfo)
     }
 };
 
+users.getIndexOf = function(userId)
+{
+    return this.findIndex((element) => element.id === userId);
+};
+
 users.update = function(userInfo)
 {
     const index = this.getIndexOf(userInfo.id);
@@ -59,6 +69,12 @@ users.delete = function(userId)
 {
     const index = this.getIndexOf(userId);
 
+    function nullifyAssociated(element, i, array)
+    {
+        if (element.userIndex === index)
+            array[i] = null
+    }
+
     if (index >= 0)
     {
         /*
@@ -66,15 +82,13 @@ users.delete = function(userId)
         help and their offers of help.
         */
 
-        let requestIndex = requestsForHelp.findIndex((element) => element.useIndex = index);
+        requestsForHelp.forEach(nullifyAssociated);
+        offersOfHelp.forEach(nullifyAssociated);
 
-        while (requestIndex >= 0)
-        {
-            requestDelete(requestIndex);
+        trimArray(requestsForHelp);
+        trimArray(offersOfHelp);
 
-            requestIndex = requestsForHelp.findIndex((element) => element.useIndex = index);
-        }
-
+        /*
         let offerIndex = offersOfHelp.findIndex((element) => element.useIndex = index);
 
         while (offerIndex >= 0)
@@ -83,8 +97,12 @@ users.delete = function(userId)
 
             offerIndex = offersOfHelp.findIndex((element) => element.useIndex = index);
         }
+        */
 
         this[index] = null;
+
+        this(requestsForHelp);
+
         return true;
     }
     else
@@ -92,15 +110,6 @@ users.delete = function(userId)
 }
 
 // Requests for help CRUD
-
-requestsForHelp.getIndexOf = function(userIndex, topic)
-{
-    return requestsForHelp.findIndex(function(element)
-        {
-            return (element.userIndex === userIndex)
-                && (element.topic === topic);
-        });
-};
 
 requestsForHelp.create = function(requestInfo)
 {
@@ -126,9 +135,91 @@ requestsForHelp.create = function(requestInfo)
     }
 }
 
-requestsForHelp.update = function(reqeustInfo)
+requestsForHelp.getIndexOf = function(userIndex, topic)
 {
-    const index = users.findIndex((element) => element.id === reqeustInfo.id);
+    return requestsForHelp.findIndex(function(element)
+        {
+            return (element.userIndex === userIndex)
+                && (element.topic === topic);
+        });
+};
+
+requestsForHelp.update = function(requestInfo)
+{
+    let index = this.getIndexOf(requestInfo.userIndex,
+        requestInfo.topic);
+
+    if (index >= 0)
+    {
+        users[index] = requestInfo;
+        return true;
+    }
+    else
+        return false;
+}
+
+requestsForHelp.delete = function(userIndex, topic)
+{
+    let index = this.getIndexOf(userIndex, topic);
+
+    function nullifyAssociated(element, i, array)
+    {
+        if (element.userIndex === index)
+            array[i] = null
+    }
+
+    /*
+    When deleting a reqeust for help, it's also necessary to delete any
+    associated offers of help.
+    */
+
+    offersOfHelp.forEach(nullifyAssociated);
+
+    this[index] = null;
+
+    trimArray(this);
+    trimArray(offersOfHelp);
+}
+
+// Offers of help CRUD
+
+offersOfHelp.create = function(offerInfo)
+{
+    let index = this.getIndexOf(offerInfo.userIndex,
+        offerInfo.topic);
+
+    if (index >= 0)
+        return -1;
+    else
+    {
+        index = offersOfHelp.findIndex((element) => element === null)
+
+        if (index >= 0)
+        {
+            offersOfHelp[index] = offerInfo;
+            return index;
+        }
+        else
+        {
+            offersOfHelp.push(offerInfo);
+            return offersOfHelp.length - 1;
+        }
+    }
+}
+
+offersOfHelp.getIndexOf = function(userIndex, requestIndex)
+{
+    return offersOfHelp.findIndex(function(element)
+        {
+            return (element.userIndex === userIndex)
+                && (element.requestIndex === requestIndex);
+        });
+};
+
+offersOfHelp.update = function(reqeustInfo)
+{
+    let index = this.getIndexOf(offerInfo.userIndex,
+        offerInfo.topic);
 
     if (index >= 0)
     {
@@ -139,34 +230,18 @@ requestsForHelp.update = function(reqeustInfo)
         return false;
 }
 
-export function requestDelete(requestId)
+offersOfHelp.delete = function(userIndex, requestIndex)
 {
-    /*
-    When deleting a reqeust for help, it's also necessary to delete any offers
-    of help.
-    */
+    let index = this.getIndexOf(userIndex, requestIndex);
 
-    for (let offer of offersOfHelp)
-    if (offer.id === index)
-        offerDelete(offer.id);
-
-    requestsForHelp[requestId] = null;
+    offersOfHelp[index] = null;
 }
 
-export function offerDelete(offerId)
-{
-    offersOfHelp[offerId] = null;
-}
+console.log(users[0]);
+console.log(requestsForHelp[0]);
+console.log(offersOfHelp[0]);
 
-function findElementsOf(array, callback)
-{
-    const result = [];
-
-    for (element of array)
-    {
-        if callback(element)
-            result.push(element);
-    }
-
-    return result;
-}
+console.log("Deleting user...");
+users.delete("Noah E. Tall");
+console.log(requestsForHelp[0]);
+console.log(offersOfHelp[0]);
