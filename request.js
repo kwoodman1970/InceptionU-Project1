@@ -55,15 +55,14 @@ requestRouter.patch("/", function(request, response)
 
 requestRouter.delete("/", function(request, response)
     {
-        const id = request.body.id;
+        const userIndex = request.body.userIndex;
+        const topic = request.body.topic;
 
-        if (requestsForHelp.delete(id))
-        {
-            response.json({msg:  `request \"${id}\" deleted.`});
-        }
+        if (requestsForHelp.delete(userIndex, topic))
+            response.json({msg:  `Request ${userIndex}:  \"${topic}\" deleted.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `request ${id} not found.`});
+            response.json({msg:  `Request ${userIndex}:  \"${topic}\"  not found.`});
         }
     });

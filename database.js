@@ -54,7 +54,10 @@ users.getIndexOf = function(id)
     if(isAllDigits.test(id))
         return parseInt(id);
     else
-        return this.findIndex((element) => element.id === id);
+        return this.findIndex(function(element)
+            {
+                return (element !== null) && (element.id === id);
+            });
 };
 
 users.update = function(userInfo)
@@ -90,22 +93,10 @@ users.delete = function(userId)
         requestsForHelp.forEach(nullifyAssociated);
         offersOfHelp.forEach(nullifyAssociated);
 
-        trimArray(requestsForHelp);
-        trimArray(offersOfHelp);
-
-        /*
-        let offerIndex = offersOfHelp.findIndex((element) => element.useIndex = index);
-
-        while (offerIndex >= 0)
-        {
-            offerDelete(offerIndex);
-
-            offerIndex = offersOfHelp.findIndex((element) => element.useIndex = index);
-        }
-        */
-
         this[index] = null;
 
+        trimArray(requestsForHelp);
+        trimArray(offersOfHelp);
         trimArray(this);
 
         return true;
@@ -118,8 +109,10 @@ users.delete = function(userId)
 
 requestsForHelp.create = function(requestInfo)
 {
-    let index = this.getIndexOf(requestInfo.userIndex,
-        requestInfo.topic);
+    const userId = requestInfo.userId;
+    const topic = requestInfo.topic;
+
+    let index = this.getIndexOf(userId, topic);
 
     if (index >= 0)
         return -1;
@@ -138,7 +131,7 @@ requestsForHelp.create = function(requestInfo)
             return requestsForHelp.length - 1;
         }
     }
-}
+};
 
 requestsForHelp.getIndexOf = function(userId, topic)
 {
@@ -146,19 +139,20 @@ requestsForHelp.getIndexOf = function(userId, topic)
 
     return requestsForHelp.findIndex(function(element)
         {
-            return (element.userIndex === userIndex)
+            return (element !== null) && (element.userIndex === userIndex)
                 && (element.topic === topic);
         });
 };
 
 requestsForHelp.update = function(requestInfo)
 {
-    let index = this.getIndexOf(requestInfo.userIndex,
-        requestInfo.topic);
+    const userIndex = requestInfo.userIndex;
+    const topic = requestInfo.topic;
+    const index = this.getIndexOf(userIndex, topic);
 
     if (index >= 0)
     {
-        users[index] = requestInfo;
+        this[index] = requestInfo;
         return true;
     }
     else
@@ -167,25 +161,34 @@ requestsForHelp.update = function(requestInfo)
 
 requestsForHelp.delete = function(userIndex, topic)
 {
-    let index = this.getIndexOf(userIndex, topic);
+    console.log(`Got delete request for ${userIndex}:  \"${topic}\".`);
 
-    function nullifyAssociated(element, i, array)
+    const index = this.getIndexOf(userIndex, topic);
+
+    if (index < 0)
+        return false;
+    else
     {
-        if (element.userIndex === index)
-            array[i] = null
+        function nullifyAssociated(element, i, array)
+        {
+            if (element.userIndex === index)
+                array[i] = null
+        }
+
+        /*
+        When deleting a reqeust for help, it's also necessary to delete any
+        associated offers of help.
+        */
+
+        offersOfHelp.forEach(nullifyAssociated);
+
+        this[index] = null;
+
+        trimArray(offersOfHelp);
+        trimArray(this);
+
+        return true;
     }
-
-    /*
-    When deleting a reqeust for help, it's also necessary to delete any
-    associated offers of help.
-    */
-
-    offersOfHelp.forEach(nullifyAssociated);
-
-    this[index] = null;
-
-    trimArray(offersOfHelp);
-    trimArray(this);
 }
 
 // Offers of help CRUD
@@ -239,11 +242,17 @@ offersOfHelp.update = function(reqeustInfo)
         return false;
 }
 
-offersOfHelp.delete = function(userIndex, requestIndex)
+offersOfHelp.delete = function(userId, requestIndex)
 {
-    let index = this.getIndexOf(userIndex, requestIndex);
+    let index = this.getIndexOf(userId, requestIndex);
 
-    offersOfHelp[index] = null;
+    if (index >= 0)
+    {
+        offersOfHelp[index] = null;
+        return true;
+    }
+    else
+        return false;
 }
 
 /*

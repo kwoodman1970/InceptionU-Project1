@@ -23,16 +23,10 @@ userRouter.post("/", function(request, response)
 userRouter.get("/:id", function(request, response)
     {
         const id = request.params.id;
-
-        let index = users.getIndexOf(id);
-
-        if ((index < 0) || (id === "0"))
-            index = parseInt(request.params.id);
+        const index = users.getIndexOf(id);
 
         if ((index >= 0) && (users[index] != null))
-        {
             response.json(users[index]);
-        }
         else
         {
             response.status = 404;
@@ -58,9 +52,7 @@ userRouter.delete("/", function(request, response)
         const id = request.body.id;
 
         if (users.delete(id))
-        {
             response.json({msg:  `User \"${id}\" deleted.`});
-        }
         else
         {
             response.status = 404;
