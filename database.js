@@ -110,9 +110,9 @@ users.delete = function(userId)
 requestsForHelp.create = function(requestInfo)
 {
     const userId = requestInfo.userId;
-    const topic = requestInfo.topic;
+    const requestIndex = requestInfo.requestIndex;
 
-    let index = this.getIndexOf(userId, topic);
+    let index = this.getIndexOf(userId, requestIndex);
 
     if (index >= 0)
         return -1;
@@ -133,22 +133,22 @@ requestsForHelp.create = function(requestInfo)
     }
 };
 
-requestsForHelp.getIndexOf = function(userId, topic)
+requestsForHelp.getIndexOf = function(userId, requestIndex)
 {
     const userIndex = users.getIndexOf(userId);
 
     return requestsForHelp.findIndex(function(element)
         {
             return (element !== null) && (element.userIndex === userIndex)
-                && (element.topic === topic);
+                && (element.requestIndex === requestIndex);
         });
 };
 
 requestsForHelp.update = function(requestInfo)
 {
     const userIndex = requestInfo.userIndex;
-    const topic = requestInfo.topic;
-    const index = this.getIndexOf(userIndex, topic);
+    const requestIndex = requestInfo.requestIndex;
+    const index = this.getIndexOf(userIndex, requestIndex);
 
     if (index >= 0)
     {
@@ -159,11 +159,11 @@ requestsForHelp.update = function(requestInfo)
         return false;
 }
 
-requestsForHelp.delete = function(userIndex, topic)
+requestsForHelp.delete = function(userIndex, requestIndex)
 {
-    console.log(`Got delete request for ${userIndex}:  \"${topic}\".`);
+    console.log(`Got delete request for ${userIndex}:  \"${requestIndex}\".`);
 
-    const index = this.getIndexOf(userIndex, topic);
+    const index = this.getIndexOf(userIndex, requestIndex);
 
     if (index < 0)
         return false;
@@ -196,7 +196,7 @@ requestsForHelp.delete = function(userIndex, topic)
 offersOfHelp.create = function(offerInfo)
 {
     let index = this.getIndexOf(offerInfo.userIndex,
-        offerInfo.topic);
+        offerInfo.requestIndex);
 
     if (index >= 0)
         return -1;
@@ -231,7 +231,7 @@ offersOfHelp.getIndexOf = function(userId, requestIndex)
 offersOfHelp.update = function(reqeustInfo)
 {
     let index = this.getIndexOf(offerInfo.userIndex,
-        offerInfo.topic);
+        offerInfo.requestIndex);
 
     if (index >= 0)
     {

@@ -3,7 +3,7 @@ import {users} from "./database.js";
 
 export const userRouter = express.Router();
 
-userRouter.get("/", (reqeust, response) => response.send(users));
+userRouter.get("/", (request, response) => response.send(users));
 
 userRouter.post("/", function(request, response)
     {

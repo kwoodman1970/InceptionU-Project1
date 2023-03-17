@@ -3,7 +3,7 @@ import {requestsForHelp} from "./database.js";
 
 export const requestRouter = express.Router();
 
-requestRouter.get("/", (reqeust, response) => response.send(requestsForHelp));
+requestRouter.get("/", (request, response) => response.send(requestsForHelp));
 
 requestRouter.post("/", function(request, response)
     {
