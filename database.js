@@ -47,9 +47,14 @@ users.create = function(userInfo)
     }
 };
 
-users.getIndexOf = function(userId)
+users.getIndexOf = function(id)
 {
-    return this.findIndex((element) => element.id === userId);
+    const isAllDigits = /^\d+$/;
+
+    if(isAllDigits.test(id))
+        return parseInt(id);
+    else
+        return this.findIndex((element) => element.id === id);
 };
 
 users.update = function(userInfo)
@@ -135,8 +140,10 @@ requestsForHelp.create = function(requestInfo)
     }
 }
 
-requestsForHelp.getIndexOf = function(userIndex, topic)
+requestsForHelp.getIndexOf = function(userId, topic)
 {
+    const userIndex = users.getIndexOf(userId);
+
     return requestsForHelp.findIndex(function(element)
         {
             return (element.userIndex === userIndex)
@@ -207,8 +214,10 @@ offersOfHelp.create = function(offerInfo)
     }
 }
 
-offersOfHelp.getIndexOf = function(userIndex, requestIndex)
+offersOfHelp.getIndexOf = function(userId, requestIndex)
 {
+    const userIndex = users.getIndexOf(userId);
+
     return offersOfHelp.findIndex(function(element)
         {
             return (element.userIndex === userIndex)
