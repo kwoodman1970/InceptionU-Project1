@@ -8,10 +8,16 @@ const app = express();
 
 app.use(express.json());
 
-app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
-
-app.get("/", (request, response) => response.send("Server is running."));
-
 app.use("/user", userRouter);
 app.use("/request", requestRouter);
 app.use("/offer", offerRouter);
+
+app.get("/", (request, response) => response.send("Server is running."));
+
+app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+
+process.on('SIGTERM', () =>
+    {
+        debug("SIGTERM received -- exiting...");
+        server.close(() => debug("HTTP server closed."));
+    });

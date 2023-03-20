@@ -45,24 +45,24 @@ offerRouter.patch("/", function(request, response)
         const offerInfo = request.body;
 
         if (offersOfHelp.update(offerInfo))
-            response.json({msg:  `offer \"${offerInfo.userIndex}:  ${offerInfo.requestId}\" updated.`});
+            response.json({msg:  `offer ${offerInfo.userIndex}:${offerInfo.requestIndex} updated.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `offer \"${offerInfo.userIndex}:  ${offerInfo.requestId}\" not found.`});
+            response.json({msg:  `offer ${offerInfo.userIndex}:${offerInfo.requestIndex} not found.`});
         }
     });
 
 offerRouter.delete("/", function(request, response)
     {
         const userIndex = request.body.userIndex;
-        const requestId = request.body.requestId;
+        const requestIndex = request.body.requestIndex;
 
-        if (offersOfHelp.delete(userIndex, requestId))
-            response.json({msg:  `offer ${userIndex}:  \"${requestId}\" deleted.`});
+        if (offersOfHelp.delete(userIndex, requestIndex))
+            response.json({msg:  `offer ${userIndex}:${requestIndex} deleted.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `offer ${userIndex}:  \"${requestId}\"  not found.`});
+            response.json({msg:  `offer ${userIndex}:${requestIndex}  not found.`});
         }
     });

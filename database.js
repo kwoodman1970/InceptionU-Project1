@@ -228,14 +228,18 @@ offersOfHelp.getIndexOf = function(userId, requestIndex)
         });
 };
 
-offersOfHelp.update = function(reqeustInfo)
+offersOfHelp.update = function(offerInfo)
 {
+    console.log(offerInfo);
+
     let index = this.getIndexOf(offerInfo.userIndex,
         offerInfo.requestIndex);
 
+    console.log(index);
+
     if (index >= 0)
     {
-        users[index] = reqeustInfo;
+        users[index] = offerInfo;
         return true;
     }
     else
