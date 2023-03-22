@@ -1,5 +1,5 @@
 import express from "express";
-import {users} from "./database.js";
+import {users, requestsForHelp} from "./database.js";
 
 export const userRouter = express.Router();
 
@@ -33,6 +33,54 @@ userRouter.get("/:id", function(request, response)
             response.json({msg:  `User ${id} not found.`});
         }
     });
+
+userRouter.get("/:id/requests", function(request, response)
+    {
+        const id = request.params.id;
+        const index = users.getIndexOf(id);
+
+        if (index >= 0)
+        {
+            const matches = requestsForHelp.filter((element) => element.userIndex === index);
+
+            response.json(matches);
+        }
+        else
+        {
+            response.status = 404;
+            response.json({msg:  `User ${id} not found.`});
+        }
+    });
+
+/*
+requestRouter.get("/", function(request, response)
+    {
+        const topic = request.query.topic;
+
+        if (topic)
+        {
+            console.log(`Got GET request for \"${topic}\"`);
+
+            const allByTopic = requestsForHelp.filter((element) => element.topic === topic);
+            const matches =
+
+            response.json(allByTopic);
+        }
+        else if (userId)
+        {
+            console.log(`Got GET request for \"${userId}\"`);
+
+            const allByUser = requestsForHelp.filter((element) => element.userIndex === parseInt(userId));
+
+            response.json(allByUser);
+        }
+        else
+        {
+            console.log(`Got GET request for all`);
+            response.json(requestsForHelp);
+        }
+    });
+*/
 
 userRouter.patch("/", function(request, response)
     {

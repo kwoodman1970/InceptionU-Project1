@@ -3,7 +3,27 @@ import {requestsForHelp} from "./database.js";
 
 export const requestRouter = express.Router();
 
-requestRouter.get("/", (request, response) => response.send(requestsForHelp));
+//requestRouter.get("/", (request, response) => response.send(requestsForHelp));
+
+requestRouter.get("/", function(request, response)
+    {
+        const userId = request.query.userId;
+
+        if (userId !== undefined)
+        {
+            console.log(`Got GET request for \"${userId}\"`);
+
+            const userIndex = parseInt(userId);
+            const allByUser = requestsForHelp.filter((element) => element.userIndex === userIndex);
+
+            response.json(allByUser);
+        }
+        else
+        {
+            console.log(`Got GET request for all`);
+            response.json(requestsForHelp);
+        }
+    });
 
 requestRouter.post("/", function(request, response)
     {
@@ -20,12 +40,19 @@ requestRouter.post("/", function(request, response)
         }
     });
 
-requestRouter.get("/:userIndex/:topic", function(request, response)
+requestRouter.get("/:topic", function(request, response)
     {
-        const userIndex = parseInt(request.params.userIndex);
         const topic = request.params.topic;
+        const matches = requestsForHelp.filter((element) => element.topic === topic);
 
-        let index = requestsForHelp.getIndexOf(userIndex, topic);
+        response.json(matches);
+    });
+
+requestRouter.get("/:topic/:userIndex", function(request, response)
+    {
+        const topic = request.params.topic;
+        const userIndex = parseInt(request.params.userIndex);
+        const index = requestsForHelp.getIndexOf(userIndex, topic);
 
         console.log(`User Index is ${userIndex}, Topic is \"${topic}\", Index is ${index}`);
 

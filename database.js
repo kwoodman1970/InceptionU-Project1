@@ -133,22 +133,22 @@ requestsForHelp.create = function(requestInfo)
     }
 };
 
-requestsForHelp.getIndexOf = function(userId, requestIndex)
+requestsForHelp.getIndexOf = function(userId, topic)
 {
     const userIndex = users.getIndexOf(userId);
 
     return requestsForHelp.findIndex(function(element)
         {
             return (element !== null) && (element.userIndex === userIndex)
-                && (element.requestIndex === requestIndex);
+                && (element.topic === topic);
         });
 };
 
 requestsForHelp.update = function(requestInfo)
 {
     const userIndex = requestInfo.userIndex;
-    const requestIndex = requestInfo.requestIndex;
-    const index = this.getIndexOf(userIndex, requestIndex);
+    const topic = requestInfo.topic;
+    const index = this.getIndexOf(userIndex, topic);
 
     if (index >= 0)
     {
