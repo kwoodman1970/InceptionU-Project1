@@ -41,7 +41,7 @@ userRouter.get("/:id/requests", function(request, response)
 
         if (index >= 0)
         {
-            const matches = requestsForHelp.filter((element) => element.userIndex === index);
+            const matches = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === index));
 
             response.json(matches);
         }

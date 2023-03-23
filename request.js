@@ -14,7 +14,7 @@ requestRouter.get("/", function(request, response)
             console.log(`Got GET request for \"${userId}\"`);
 
             const userIndex = parseInt(userId);
-            const allByUser = requestsForHelp.filter((element) => element.userIndex === userIndex);
+            const allByUser = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === userIndex));
 
             response.json(allByUser);
         }
@@ -43,7 +43,7 @@ requestRouter.post("/", function(request, response)
 requestRouter.get("/:topic", function(request, response)
     {
         const topic = request.params.topic;
-        const matches = requestsForHelp.filter((element) => element.topic === topic);
+        const matches = requestsForHelp.filter((element) => (element !== null) && (element.topic === topic));
 
         response.json(matches);
     });

@@ -79,8 +79,8 @@ users.delete = function(userId)
 
     function nullifyAssociated(element, i, array)
     {
-        if (element.userIndex === index)
-            array[i] = null
+        if ((element !== null) && (element.userIndex === index))
+            array[i] = null;
     }
 
     if (index >= 0)
@@ -171,8 +171,8 @@ requestsForHelp.delete = function(userIndex, requestIndex)
     {
         function nullifyAssociated(element, i, array)
         {
-            if (element.userIndex === index)
-                array[i] = null
+            if ((element !== null) && (element.userIndex === index))
+                array[i] = null;
         }
 
         /*
@@ -223,7 +223,7 @@ offersOfHelp.getIndexOf = function(userId, requestIndex)
 
     return offersOfHelp.findIndex(function(element)
         {
-            return (element.userIndex === userIndex)
+            return (element !== null) && (element.userIndex === userIndex)
                 && (element.requestIndex === requestIndex);
         });
 };
