@@ -1,5 +1,5 @@
 import express from "express";
-import {requestsForHelp} from "./database.js";
+import {users, requestsForHelp} from "./database.js";
 
 export const requestRouter = express.Router();
 
@@ -13,10 +13,14 @@ requestRouter.get("/", function(request, response)
         {
             console.log(`Got GET request for \"${userId}\"`);
 
-            const userIndex = parseInt(userId);
-            const allByUser = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === userIndex));
+            const userIndex = users.getIndexOf(userId);
+            const user = users[userIndex];
 
-            response.json(allByUser);
+            console.log(`userIndex = ${userIndex}, user.id = \"${user.id}\"`);
+
+            const allForUser = requestsForHelp.filter((element) => (element !== null) && (user.topicsCanHelpWith.includes(element.topic)));
+
+            response.json(allForUser);
         }
         else
         {
