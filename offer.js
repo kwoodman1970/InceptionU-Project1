@@ -1,9 +1,33 @@
 import express from "express";
-import {offersOfHelp} from "./database.js";
+import {users, requestsForHelp, offersOfHelp} from "./database.js";
 
 export const offerRouter = express.Router();
 
-offerRouter.get("/", (request, response) => response.send(offersOfHelp));
+//offerRouter.get("/", (request, response) => response.send(offersOfHelp));
+
+offerRouter.get("/", function(request, response)
+    {
+        const userId = request.query.userId;
+
+        if (userId !== undefined)
+        {
+            console.log(`Got GET request for \"${userId}\"`);
+
+            const userIndex = users.getIndexOf(userId);
+            const user = users[userIndex];
+
+            console.log(`userIndex = ${userIndex}, user.id = \"${user.id}\"`);
+
+            const allForUser = offersOfHelp.filter((element) => (element !== null) && (requestsForHelp[element.requestIndex].userIndex === userIndex));
+
+            response.json(allForUser);
+        }
+        else
+        {
+            console.log(`Got GET request for all`);
+            response.json(offersOfHelp);
+        }
+    });
 
 offerRouter.post("/", function(request, response)
     {
