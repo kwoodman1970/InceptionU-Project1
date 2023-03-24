@@ -259,6 +259,17 @@ offersOfHelp.delete = function(userId, requestIndex)
         return false;
 }
 
+process.on("SIGINT", function (exitCode)
+    {
+        fs.writeFileSync(directory + usersFilename, JSON.stringify(users, null, 4));
+        fs.writeFileSync(directory + requestsForHelpFilename, JSON.stringify(requestsForHelp, null, 4));
+        fs.writeFileSync(directory + offersOfHelpFilename, JSON.stringify(offersOfHelp, null, 4));
+
+        console.log(`Data files saved -- exit code is ${exitCode}.`);
+
+        process.exit();
+    });
+
 /*
 console.log(users[0]);
 console.log(requestsForHelp[0]);
