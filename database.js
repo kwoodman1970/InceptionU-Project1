@@ -14,12 +14,10 @@ users = JSON.parse(fs.readFileSync(directory + usersFilename));
 requestsForHelp = JSON.parse(fs.readFileSync(directory + requestsForHelpFilename));
 offersOfHelp = JSON.parse(fs.readFileSync(directory + offersOfHelpFilename));
 
-function trimArray(array)
+function trimArray()
 {
-    let lastNonNullIndex = array.findLastIndex((element) => element !== null);
-
-    if (lastNonNullIndex >= 0)
-        array.splice(lastNonNullIndex + 1);
+    while ((this.length > 0) && (this[this.length - 1] === null))
+        this.pop();
 }
 
 // Users CRUD
@@ -77,12 +75,6 @@ users.delete = function(userId)
 {
     const index = this.getIndexOf(userId);
 
-    function nullifyAssociated(element, i, array)
-    {
-        if ((element !== null) && (element.userIndex === index))
-            array[i] = null;
-    }
-
     if (index >= 0)
     {
         /*
@@ -90,20 +82,18 @@ users.delete = function(userId)
         help and their offers of help.
         */
 
-        requestsForHelp.forEach(nullifyAssociated);
-        offersOfHelp.forEach(nullifyAssociated);
+        requestsForHelp.deleteByUserId(index);
+        offersOfHelp.deleteByUserId(index);
 
         this[index] = null;
-
-        trimArray(requestsForHelp);
-        trimArray(offersOfHelp);
-        trimArray(this);
 
         return true;
     }
     else
         return false;
 }
+
+users.trim = trimArray;
 
 // Requests for help CRUD
 
@@ -161,7 +151,7 @@ requestsForHelp.update = function(requestInfo)
 
 requestsForHelp.delete = function(userIndex, requestIndex)
 {
-    console.log(`Got delete request for ${userIndex}:  \"${requestIndex}\".`);
+    console.log(`Got delete request for ${userIndex}:  ${requestIndex}.`);
 
     const index = this.getIndexOf(userIndex, requestIndex);
 
@@ -169,27 +159,35 @@ requestsForHelp.delete = function(userIndex, requestIndex)
         return false;
     else
     {
-        function nullifyAssociated(element, i, array)
-        {
-            if ((element !== null) && (element.userIndex === index))
-                array[i] = null;
-        }
-
         /*
         When deleting a reqeust for help, it's also necessary to delete any
         associated offers of help.
         */
 
-        offersOfHelp.forEach(nullifyAssociated);
+        offersOfHelp.deleteByRequestIndex(index);
 
         this[index] = null;
-
-        trimArray(offersOfHelp);
-        trimArray(this);
 
         return true;
     }
 }
+
+requestsForHelp.deleteByUserId = function(userId)
+{
+    let userIndex = users.getIndexOf(userId);
+
+    if (userIndex >= 0)
+        this.forEach(function(element, index, array)
+            {
+                if ((element !== null) && (element.userIndex === userIndex))
+                {
+                    offersOfHelp.deleteByRequestIndex(index);
+                    array[index] = null
+                }
+            });
+}
+
+requestsForHelp.trim = trimArray;
 
 // Offers of help CRUD
 
@@ -230,12 +228,8 @@ offersOfHelp.getIndexOf = function(userId, requestIndex)
 
 offersOfHelp.update = function(offerInfo)
 {
-    console.log(offerInfo);
-
     let index = this.getIndexOf(offerInfo.userIndex,
         offerInfo.requestIndex);
-
-    console.log(index);
 
     if (index >= 0)
     {
@@ -259,8 +253,36 @@ offersOfHelp.delete = function(userId, requestIndex)
         return false;
 }
 
+offersOfHelp.deleteByUserId = function(userId)
+{
+    let userIndex = users.getIndexOf(userId);
+
+    if (userIndex >= 0)
+        this.forEach(function(element, index, array)
+            {
+                if ((element !== null) && (element.userIndex === userIndex))
+                    array[index] = null
+            });
+}
+
+offersOfHelp.deleteByRequestIndex = function(requestIndex)
+{
+    if (requestIndex >= 0)
+        this.forEach(function(element, index, array)
+            {
+                if ((element !== null) && (element.requestIndex === requestIndex))
+                    array[index] = null
+            });
+}
+
+offersOfHelp.trim = trimArray;
+
 process.on("SIGINT", function (exitCode)
     {
+        users.trim();
+        requestsForHelp.trim();
+        offersOfHelp.trim();
+
         fs.writeFileSync(directory + usersFilename, JSON.stringify(users, null, 4));
         fs.writeFileSync(directory + requestsForHelpFilename, JSON.stringify(requestsForHelp, null, 4));
         fs.writeFileSync(directory + offersOfHelpFilename, JSON.stringify(offersOfHelp, null, 4));
@@ -269,14 +291,3 @@ process.on("SIGINT", function (exitCode)
 
         process.exit();
     });
-
-/*
-console.log(users[0]);
-console.log(requestsForHelp[0]);
-console.log(offersOfHelp[0]);
-
-console.log("Deleting user...");
-users.delete("Noah E. Tall");
-console.log(requestsForHelp[0]);
-console.log(offersOfHelp[0]);
-*/

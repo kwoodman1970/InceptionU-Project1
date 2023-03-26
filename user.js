@@ -52,36 +52,6 @@ userRouter.get("/:id/requests", function(request, response)
         }
     });
 
-/*
-requestRouter.get("/", function(request, response)
-    {
-        const topic = request.query.topic;
-
-        if (topic)
-        {
-            console.log(`Got GET request for \"${topic}\"`);
-
-            const allByTopic = requestsForHelp.filter((element) => element.topic === topic);
-            const matches =
-
-            response.json(allByTopic);
-        }
-        else if (userId)
-        {
-            console.log(`Got GET request for \"${userId}\"`);
-
-            const allByUser = requestsForHelp.filter((element) => element.userIndex === parseInt(userId));
-
-            response.json(allByUser);
-        }
-        else
-        {
-            console.log(`Got GET request for all`);
-            response.json(requestsForHelp);
-        }
-    });
-*/
-
 userRouter.patch("/", function(request, response)
     {
         const userInfo = request.body;
