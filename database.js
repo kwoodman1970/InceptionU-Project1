@@ -104,61 +104,57 @@ users._data.trim = trimArray;
 
 requestsForHelp.create = function(requestInfo)
 {
-    const userId = requestInfo.userId;
-    const requestIndex = requestInfo.requestIndex;
-
-    let index = this._getUID(userId, requestIndex);
+    const userUID = users._getUID(requestInfo.userIndex);
+    let index = this._getUID(userUID, requestInfo.topic);
 
     if (index >= 0)
         return -1;
     else
     {
-        index = requestsForHelp.findIndex((element) => element === null)
+        requestInfo.userIndex = userUID;
+        index = requestsForHelp._data.findIndex((element) => element === undefined)
 
         if (index >= 0)
         {
-            requestsForHelp[index] = requestInfo;
+            requestsForHelp._data[index] = requestInfo;
             return index;
         }
         else
         {
-            requestsForHelp.push(requestInfo);
-            return requestsForHelp.length - 1;
+            requestsForHelp._data.push(requestInfo);
+            return requestsForHelp._data.length - 1;
         }
     }
 };
 
-requestsForHelp._getUID = function(userId, topic)
-{
-    const userIndex = users._getUID(userId);
+requestsForHelp.getAll = function()
+    {return this._data.filter((element) => element !== undefined);}
 
-    return requestsForHelp.findIndex(function(element)
-        {
-            return (element !== null) && (element.userIndex === userIndex)
-                && (element.topic === topic);
-        });
-};
+requestsForHelp.get = function(userId, topic)
+{
+    const UID = this._getUID(userId, topic);
+
+    return (UID >= 0 ? this._data[UID] : null);
+}
 
 requestsForHelp.update = function(requestInfo)
 {
-    const userIndex = requestInfo.userIndex;
+    const userUID = requestInfo.userIndex;
     const topic = requestInfo.topic;
-    const index = this._getUID(userIndex, topic);
+    const index = this._getUID(userUID, topic);
 
     if (index >= 0)
     {
-        this[index] = requestInfo;
+        this._data[index] = requestInfo;
         return true;
     }
     else
         return false;
 }
 
-requestsForHelp.delete = function(userIndex, requestIndex)
+requestsForHelp.delete = function(userId, topic)
 {
-    console.log(`Got delete request for ${userIndex}:  ${requestIndex}.`);
-
-    const index = this._getUID(userIndex, requestIndex);
+    const index = this._getUID(userId, topic);
 
     if (index < 0)
         return false;
@@ -169,9 +165,9 @@ requestsForHelp.delete = function(userIndex, requestIndex)
         associated offers of help.
         */
 
-        offersOfHelp.deleteByRequestIndex(index);
+        // offersOfHelp.deleteByRequestIndex(index);
 
-        this[index] = null;
+        this._data[index] = undefined;
 
         return true;
     }
@@ -179,20 +175,31 @@ requestsForHelp.delete = function(userIndex, requestIndex)
 
 requestsForHelp.deleteByUserId = function(userId)
 {
-    let userIndex = users._getUID(userId);
+    let userUID = users._getUID(userId);
 
-    if (userIndex >= 0)
-        this.forEach(function(element, index, array)
+    if (userUID >= 0)
+        this._data.forEach(function(element, index, array)
             {
-                if ((element !== null) && (element.userIndex === userIndex))
+                if ((element !== undefined) && (element.userIndex === userUID))
                 {
-                    offersOfHelp.deleteByRequestIndex(index);
-                    array[index] = null
+                    // offersOfHelp.deleteByRequestIndex(index);
+                    array[index] = undefined
                 }
             });
 }
 
-requestsForHelp.trim = trimArray;
+requestsForHelp._getUID = function(userId, topic)
+{
+    const userUID = users._getUID(userId);
+
+    return requestsForHelp._data.findIndex(function(element)
+        {
+            return (element !== undefined) && (element.userIndex === userUID)
+                && (element.topic === topic);
+        });
+};
+
+requestsForHelp._data.trim = trimArray;
 
 // Offers of help CRUD
 

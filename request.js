@@ -20,27 +20,33 @@ export const requestRouter = express.Router();
 requestRouter.get("/", function(request, response)
     {
         const userId = request.query.userId;
+        const allRequests = requestsForHelp.getAll();
 
         if (userId !== undefined)
         {
-            const userIndex = users.getIndexOf(userId);
-            const user = users[userIndex];
-            const allForUser = requestsForHelp.filter((element) => (element !== null) && (user.topicsCanHelpWith.includes(element.topic)));
+            const userInfo = users.get(request.query.userId);
 
-            response.json(allForUser);
+            if (userInfo !== null)
+            {
+                const allForUser = allRequests.filter((element) => userInfo.topicsCanHelpWith.includes(element.topic));
+
+                response.json(allForUser);
+            }
+            else
+                response.json([]);
         }
         else
-            response.json(requestsForHelp);
+            response.json(allRequests);
     });
 
 requestRouter.post("/", function(request, response)
     {
         const newRequest = request.body;
 
-        const index = requestsForHelp.create(newRequest);
+        const UID = requestsForHelp.create(newRequest);
 
-        if (index >= 0)
-            response.json({"index":  index});
+        if (UID >= 0)
+            response.json({"UID":  UID});
         else
         {
             response.status = 403;
@@ -51,23 +57,24 @@ requestRouter.post("/", function(request, response)
 requestRouter.get("/:topic", function(request, response)
     {
         const topic = request.params.topic;
-        const matches = requestsForHelp.filter((element) => (element !== null) && (element.topic === topic));
+        const allRequests = requestsForHelp.getAll();
+        const matches = allRequests.filter((element) => element.topic === topic);
 
         response.json(matches);
     });
 
-requestRouter.get("/:topic/:userIndex", function(request, response)
+requestRouter.get("/:topic/:userId", function(request, response)
     {
         const topic = request.params.topic;
-        const userIndex = parseInt(request.params.userIndex);
-        const index = requestsForHelp.getIndexOf(userIndex, topic);
+        const userId = request.params.userId;
+        const requestInfo = requestsForHelp.get(userId, topic);
 
-        if (index >= 0)
-            response.json(requestsForHelp[index]);
+        if (requestInfo !== null)
+            response.json(requestInfo);
         else
         {
             response.status = 404;
-            response.json({msg:  `Request ${userIndex}:  \"${topic}\" not found.`});
+            response.json({msg:  `Request ${userId}:  \"${topic}\" not found.`});
         }
     });
 
