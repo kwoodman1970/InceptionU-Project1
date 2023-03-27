@@ -17,7 +17,7 @@ const requestsForHelp = imports.requestsForHelp;
 
 export const userRouter = express.Router();
 
-userRouter.get("/", (request, response) => response.send(users));
+userRouter.get("/", (request, response) => response.send(users.getAll()));
 
 userRouter.post("/", function(request, response)
     {
@@ -26,7 +26,7 @@ userRouter.post("/", function(request, response)
         const index = users.create(newUser);
 
         if (index >= 0)
-            response.json({"index":  index});
+            response.json({"UID":  index});
         else
         {
             response.status = 403;
@@ -37,10 +37,10 @@ userRouter.post("/", function(request, response)
 userRouter.get("/:id", function(request, response)
     {
         const id = request.params.id;
-        const index = users.getIndexOf(id);
+        const userInfo = users.get(id);
 
-        if ((index >= 0) && (users[index] != null))
-            response.json(users[index]);
+        if ((userInfo != null))
+            response.json(userInfo);
         else
         {
             response.status = 404;
@@ -51,9 +51,10 @@ userRouter.get("/:id", function(request, response)
 userRouter.get("/:id/requests", function(request, response)
     {
         const id = request.params.id;
-        const index = users.getIndexOf(id);
+        const userInfo = users.get(id);
 
-        if (index >= 0)
+        // if ((userInfo != null))
+        if (false)
         {
             const matches = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === index));
 
