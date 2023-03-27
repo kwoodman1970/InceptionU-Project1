@@ -1,5 +1,19 @@
 import express from "express";
-import {users, requestsForHelp} from "./database.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+let imports = null;
+
+if (process.env.DB === "JSON")
+    imports = await import("./database.js");
+else if  (process.env.DB === "MongoDB")
+    imports = await import("./mongodb.js");
+else
+    throw new Error(`Database specified in \".env\" (\"${process.env.DB}\") not supported.`);
+
+const users = imports.users;
+const requestsForHelp = imports.requestsForHelp;
 
 export const userRouter = express.Router();
 
