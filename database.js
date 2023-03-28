@@ -21,23 +21,22 @@ users.create = function(userInfo)
 {
     let UID = this.getUID(userInfo.id);
 
-    if (UID >= 0)
-        return -1;
+    if (UID !== null)
+        UID = null;
     else
     {
         UID = this._data.findIndex((element) => element === undefined)
 
         if (UID >= 0)
-        {
             this._data[UID] = userInfo;
-            return UID;
-        }
         else
         {
             this._data.push(userInfo);
-            return this._data.length - 1;
+            UID = this._data.length - 1;
         }
     }
+
+    return UID;
 };
 
 users.getAll = function()
@@ -74,8 +73,8 @@ users.delete = function(userId)
         help and their offers of help.
         */
 
-        // requestsForHelp.deleteByUserId(UID);
-        // offersOfHelp.deleteByUserId(UID);
+        requestsForHelp.deleteByUserId(UID);
+        offersOfHelp.deleteByUserId(UID);
 
         this._data[UID] = undefined;
 
@@ -89,13 +88,17 @@ users.getUID = function(id)
 {
     const isAllDigits = /^\d+$/;
 
+    let index = null;
+
     if(isAllDigits.test(id))
-        return (this._data[parseInt(id)] !== undefined ? parseInt(id) : -1);
+        index = (this._data[parseInt(id)] !== undefined ? parseInt(id) : -1);
     else
-        return this._data.findIndex(function(element)
+        index = this._data.findIndex(function(element)
             {
                 return (element !== undefined) && (element.id === id);
             });
+
+    return (index < 0 ? null : index);
 };
 
 users._data.trim = trimArray;
@@ -105,26 +108,25 @@ users._data.trim = trimArray;
 requestsForHelp.create = function(requestInfo)
 {
     const userUID = users.getUID(requestInfo.userIndex);
-    let index = this.getUID(userUID, requestInfo.topic);
+    let UID = this.getUID(userUID, requestInfo.topic);
 
-    if (index >= 0)
-        return -1;
+    if (UID !== null)
+        UID = null;
     else
     {
         requestInfo.userIndex = userUID;
-        index = requestsForHelp._data.findIndex((element) => element === undefined)
+        UID = requestsForHelp._data.findIndex((element) => element === undefined)
 
-        if (index >= 0)
-        {
-            requestsForHelp._data[index] = requestInfo;
-            return index;
-        }
+        if (UID >= 0)
+            requestsForHelp._data[UID] = requestInfo;
         else
         {
             requestsForHelp._data.push(requestInfo);
-            return requestsForHelp._data.length - 1;
+            UID = requestsForHelp._data.length - 1;
         }
     }
+
+    return UID;
 };
 
 requestsForHelp.getAll = function()
@@ -165,7 +167,7 @@ requestsForHelp.delete = function(userId, topic)
         associated offers of help.
         */
 
-        // offersOfHelp.deleteByRequestIndex(index);
+        offersOfHelp.deleteByRequestIndex(index);
 
         this._data[index] = undefined;
 
@@ -182,7 +184,7 @@ requestsForHelp.deleteByUserId = function(userId)
             {
                 if ((element !== undefined) && (element.userIndex === userUID))
                 {
-                    // offersOfHelp.deleteByRequestIndex(index);
+                    offersOfHelp.deleteByRequestIndex(index);
                     array[index] = undefined
                 }
             });
@@ -191,12 +193,13 @@ requestsForHelp.deleteByUserId = function(userId)
 requestsForHelp.getUID = function(userId, topic)
 {
     const userUID = users.getUID(userId);
-
-    return requestsForHelp._data.findIndex(function(element)
+    const index = requestsForHelp._data.findIndex(function(element)
         {
             return (element !== undefined) && (element.userIndex === userUID)
                 && (element.topic === topic);
         });
+
+    return (index < 0 ? null : index);
 };
 
 requestsForHelp._data.trim = trimArray;
@@ -205,25 +208,24 @@ requestsForHelp._data.trim = trimArray;
 
 offersOfHelp.create = function(offerInfo)
 {
-    let index = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
+    let UID = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
 
-    if (index >= 0)
-        return -1;
+    if (UID !== null)
+        UID = null;
     else
     {
-        index = offersOfHelp._data.findIndex((element) => element === undefined)
+        UID = offersOfHelp._data.findIndex((element) => element === undefined)
 
-        if (index >= 0)
-        {
-            offersOfHelp._data[index] = offerInfo;
-            return index;
-        }
+        if (UID >= 0)
+            offersOfHelp._data[UID] = offerInfo;
         else
         {
             offersOfHelp._data.push(offerInfo);
-            return offersOfHelp._data.length - 1;
+            UID = offersOfHelp._data.length - 1;
         }
     }
+
+    return UID;
 }
 
 offersOfHelp.getAll = function()
@@ -248,9 +250,9 @@ offersOfHelp.update = function(offerInfo)
 {
     let index = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
 
-    if (index >= 0)
+    if (index !== null)
     {
-        users._data[index] = offerInfo;
+        this._data[index] = offerInfo;
         return true;
     }
     else
@@ -261,9 +263,9 @@ offersOfHelp.delete = function(userId, requestIndex)
 {
     let index = this.getUID(userId, requestIndex);
 
-    if (index >= 0)
+    if (index !== null)
     {
-        offersOfHelp._data[index] = undefined;
+        this._data[index] = undefined;
         return true;
     }
     else
@@ -274,7 +276,7 @@ offersOfHelp.deleteByUserId = function(userId)
 {
     const userUID = users.getUID(userId);
 
-    if (userUID >= 0)
+    if (userUID !== null)
         this._data.forEach(function(element, index, array)
             {
                 if ((element !== undefined) && (element.userIndex === userUID))
@@ -295,12 +297,13 @@ offersOfHelp.deleteByRequestIndex = function(requestIndex)
 offersOfHelp.getUID = function(userId, requestIndex)
 {
     const userIndex = users.getUID(userId);
-
-    return offersOfHelp._data.findIndex(function(element)
+    const index = offersOfHelp._data.findIndex(function(element)
         {
             return (element !== undefined) && (element.userIndex === userIndex)
                 && (element.requestIndex === parseInt(requestIndex));
         });
+
+    return (index < 0 ? null : index);
 };
 
 offersOfHelp._data.trim = trimArray;

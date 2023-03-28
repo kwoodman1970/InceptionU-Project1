@@ -45,7 +45,7 @@ requestRouter.post("/", function(request, response)
 
         const UID = requestsForHelp.create(newRequest);
 
-        if (UID >= 0)
+        if (UID !== null)
             response.json({"UID":  UID});
         else
         {

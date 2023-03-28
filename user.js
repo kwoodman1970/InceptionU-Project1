@@ -23,10 +23,10 @@ userRouter.post("/", function(request, response)
     {
         const newUser = request.body;
 
-        const index = users.create(newUser);
+        const UID = users.create(newUser);
 
-        if (index >= 0)
-            response.json({"UID":  index});
+        if (UID !== null)
+            response.json({"UID":  UID});
         else
         {
             response.status = 403;
@@ -51,12 +51,13 @@ userRouter.get("/:id", function(request, response)
 userRouter.get("/:id/requests", function(request, response)
     {
         const id = request.params.id;
-        const userInfo = users.get(id);
+        const UID = users.getUID(id);
 
-        // if ((userInfo != null))
-        if (false)
+        if (UID != null)
         {
-            const matches = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === index));
+            // const matches = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === index));
+            const allRequests = requestsForHelp.getAll();
+            const matches = allRequests.filter((element) => element.userIndex === UID);
 
             response.json(matches);
         }

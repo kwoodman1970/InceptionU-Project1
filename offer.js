@@ -35,7 +35,7 @@ offerRouter.post("/", function(request, response)
 
         const UID = offersOfHelp.create(newOffer);
 
-        if (UID >= 0)
+        if (UID !== null)
             response.json({"UID":  UID});
         else
         {
