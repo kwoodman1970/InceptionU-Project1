@@ -11,7 +11,7 @@ export const offersOfHelp = {_data:  JSON.parse(fs.readFileSync(offersOfHelpFile
 
 function trimArray()
 {
-    while ((this.length > 0) && (this[this.length - 1] === null))
+    while ((this.length > 0) && (this[this.length - 1] === undefined))
         this.pop();
 }
 
@@ -19,7 +19,7 @@ function trimArray()
 
 users.create = function(userInfo)
 {
-    let UID = this._getUID(userInfo.id);
+    let UID = this.getUID(userInfo.id);
 
     if (UID >= 0)
         return -1;
@@ -45,14 +45,14 @@ users.getAll = function()
 
 users.get = function(id)
 {
-    const UID = this._getUID(id);
+    const UID = this.getUID(id);
 
     return (UID >= 0 ? this._data[UID] : null);
 }
 
 users.update = function(userInfo)
 {
-    const UID = this._getUID(userInfo.id);
+    const UID = this.getUID(userInfo.id);
 
     if (UID < 0)
         return false;
@@ -65,7 +65,7 @@ users.update = function(userInfo)
 
 users.delete = function(userId)
 {
-    const UID = this._getUID(userId);
+    const UID = this.getUID(userId);
 
     if (UID >= 0)
     {
@@ -85,7 +85,7 @@ users.delete = function(userId)
         return false;
 }
 
-users._getUID = function(id)
+users.getUID = function(id)
 {
     const isAllDigits = /^\d+$/;
 
@@ -104,8 +104,8 @@ users._data.trim = trimArray;
 
 requestsForHelp.create = function(requestInfo)
 {
-    const userUID = users._getUID(requestInfo.userIndex);
-    let index = this._getUID(userUID, requestInfo.topic);
+    const userUID = users.getUID(requestInfo.userIndex);
+    let index = this.getUID(userUID, requestInfo.topic);
 
     if (index >= 0)
         return -1;
@@ -132,7 +132,7 @@ requestsForHelp.getAll = function()
 
 requestsForHelp.get = function(userId, topic)
 {
-    const UID = this._getUID(userId, topic);
+    const UID = this.getUID(userId, topic);
 
     return (UID >= 0 ? this._data[UID] : null);
 }
@@ -141,7 +141,7 @@ requestsForHelp.update = function(requestInfo)
 {
     const userUID = requestInfo.userIndex;
     const topic = requestInfo.topic;
-    const index = this._getUID(userUID, topic);
+    const index = this.getUID(userUID, topic);
 
     if (index >= 0)
     {
@@ -154,7 +154,7 @@ requestsForHelp.update = function(requestInfo)
 
 requestsForHelp.delete = function(userId, topic)
 {
-    const index = this._getUID(userId, topic);
+    const index = this.getUID(userId, topic);
 
     if (index < 0)
         return false;
@@ -175,7 +175,7 @@ requestsForHelp.delete = function(userId, topic)
 
 requestsForHelp.deleteByUserId = function(userId)
 {
-    let userUID = users._getUID(userId);
+    let userUID = users.getUID(userId);
 
     if (userUID >= 0)
         this._data.forEach(function(element, index, array)
@@ -188,9 +188,9 @@ requestsForHelp.deleteByUserId = function(userId)
             });
 }
 
-requestsForHelp._getUID = function(userId, topic)
+requestsForHelp.getUID = function(userId, topic)
 {
-    const userUID = users._getUID(userId);
+    const userUID = users.getUID(userId);
 
     return requestsForHelp._data.findIndex(function(element)
         {
@@ -205,47 +205,52 @@ requestsForHelp._data.trim = trimArray;
 
 offersOfHelp.create = function(offerInfo)
 {
-    let index = this._getUID(offerInfo.userIndex,
-        offerInfo.requestIndex);
+    let index = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
 
     if (index >= 0)
         return -1;
     else
     {
-        index = offersOfHelp.findIndex((element) => element === null)
+        index = offersOfHelp._data.findIndex((element) => element === undefined)
 
         if (index >= 0)
         {
-            offersOfHelp[index] = offerInfo;
+            offersOfHelp._data[index] = offerInfo;
             return index;
         }
         else
         {
-            offersOfHelp.push(offerInfo);
-            return offersOfHelp.length - 1;
+            offersOfHelp._data.push(offerInfo);
+            return offersOfHelp._data.length - 1;
         }
     }
 }
 
-offersOfHelp._getUID = function(userId, requestIndex)
-{
-    const userIndex = users._getUID(userId);
+offersOfHelp.getAll = function()
+    {return this._data.filter((element) => element !== undefined);}
 
-    return offersOfHelp.findIndex(function(element)
-        {
-            return (element !== null) && (element.userIndex === userIndex)
-                && (element.requestIndex === requestIndex);
-        });
-};
+offersOfHelp.get = function(userId, requestIndex)
+{
+    const UID = this.getUID(userId, requestIndex);
+
+    return (UID >= 0 ? this._data[UID] : null);
+}
+
+offersOfHelp.getForUser = function(userId)
+{
+    const allOffers = this.getAll();
+    const userUID = users.getUID(userId);
+
+    return allOffers.filter((element) => requestsForHelp._data[element.requestIndex].userIndex === userUID);
+}
 
 offersOfHelp.update = function(offerInfo)
 {
-    let index = this._getUID(offerInfo.userIndex,
-        offerInfo.requestIndex);
+    let index = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
 
     if (index >= 0)
     {
-        users[index] = offerInfo;
+        users._data[index] = offerInfo;
         return true;
     }
     else
@@ -254,11 +259,11 @@ offersOfHelp.update = function(offerInfo)
 
 offersOfHelp.delete = function(userId, requestIndex)
 {
-    let index = this._getUID(userId, requestIndex);
+    let index = this.getUID(userId, requestIndex);
 
     if (index >= 0)
     {
-        offersOfHelp[index] = null;
+        offersOfHelp._data[index] = undefined;
         return true;
     }
     else
@@ -267,37 +272,48 @@ offersOfHelp.delete = function(userId, requestIndex)
 
 offersOfHelp.deleteByUserId = function(userId)
 {
-    let userIndex = users._getUID(userId);
+    const userUID = users.getUID(userId);
 
-    if (userIndex >= 0)
-        this.forEach(function(element, index, array)
+    if (userUID >= 0)
+        this._data.forEach(function(element, index, array)
             {
-                if ((element !== null) && (element.userIndex === userIndex))
-                    array[index] = null
+                if ((element !== undefined) && (element.userIndex === userUID))
+                    array[index] = undefined
             });
 }
 
 offersOfHelp.deleteByRequestIndex = function(requestIndex)
 {
     if (requestIndex >= 0)
-        this.forEach(function(element, index, array)
+        this._data.forEach(function(element, index, array)
             {
-                if ((element !== null) && (element.requestIndex === requestIndex))
-                    array[index] = null
+                if ((element !== undefined) && (element.requestIndex === requestIndex))
+                    array[index] = undefined
             });
 }
 
-offersOfHelp.trim = trimArray;
+offersOfHelp.getUID = function(userId, requestIndex)
+{
+    const userIndex = users.getUID(userId);
+
+    return offersOfHelp._data.findIndex(function(element)
+        {
+            return (element !== undefined) && (element.userIndex === userIndex)
+                && (element.requestIndex === parseInt(requestIndex));
+        });
+};
+
+offersOfHelp._data.trim = trimArray;
 
 process.on("SIGINT", function (exitCode)
     {
-        // users._data.trim();
-        // requestsForHelp._data.trim();
-        // offersOfHelp._data.trim();
+        users._data.trim();
+        requestsForHelp._data.trim();
+        offersOfHelp._data.trim();
 
-        // fs.writeFileSync(usersFilename, JSON.stringify(users._data, null, 4));
-        // fs.writeFileSync(requestsForHelpFilename, JSON.stringify(requestsForHelp._data, null, 4));
-        // fs.writeFileSync(offersOfHelpFilename, JSON.stringify(offersOfHelp._data, null, 4));
+        fs.writeFileSync(usersFilename, JSON.stringify(users._data, null, 4));
+        fs.writeFileSync(requestsForHelpFilename, JSON.stringify(requestsForHelp._data, null, 4));
+        fs.writeFileSync(offersOfHelpFilename, JSON.stringify(offersOfHelp._data, null, 4));
 
         console.log(`Data files saved -- exit code is ${exitCode}.`);
 

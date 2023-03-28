@@ -21,46 +21,42 @@ export const offerRouter = express.Router();
 offerRouter.get("/", function(request, response)
     {
         const userId = request.query.userId;
+        const allOffers = offersOfHelp.getAll();
 
         if (userId !== undefined)
-        {
-            const userIndex = users.getIndexOf(userId);
-            const allForUser = offersOfHelp.filter((element) => (element !== null) && (requestsForHelp[element.requestIndex].userIndex === userIndex));
-
-            response.json(allForUser);
-        }
+            response.json(offersOfHelp.getForUser(userId));
         else
-            response.json(offersOfHelp);
+            response.json(allOffers);
     });
 
 offerRouter.post("/", function(request, response)
     {
         const newOffer = request.body;
 
-        const index = offersOfHelp.create(newOffer);
+        const UID = offersOfHelp.create(newOffer);
 
-        if (index >= 0)
-            response.json({"index":  index});
+        if (UID >= 0)
+            response.json({"UID":  UID});
         else
         {
             response.status = 403;
-            response.json({msg:  `offer ${newrequest.userIndex}:${newrequest.requestIndex} already in database.`});
+            response.json({msg:  `Offer ${newOffer.userIndex}:${newOffer.requestIndex} already in database.`});
         }
     });
 
-offerRouter.get("/:userIndex/:requestIndex", function(request, response)
+offerRouter.get("/:userId/:requestId", function(request, response)
     {
-        const userIndex = parseInt(request.params.userIndex);
-        const requestIndex = parseInt(request.params.requestIndex);
+        const userId = request.params.userId;
+        const requestId = request.params.requestId;
 
-        let index = offersOfHelp.getIndexOf(userIndex, requestIndex);
+        let offer = offersOfHelp.get(userId, requestId);
 
-        if (index >= 0)
-            response.json(offersOfHelp[index]);
+        if (offer !== null)
+            response.json(offer);
         else
         {
             response.status = 404;
-            response.json({msg:  `offer ${userIndex}:${requestIndex} not found.`});
+            response.json({msg:  `Offer ${userId}:${requestId} not found.`});
         }
     });
 
@@ -69,24 +65,24 @@ offerRouter.patch("/", function(request, response)
         const offerInfo = request.body;
 
         if (offersOfHelp.update(offerInfo))
-            response.json({msg:  `offer ${offerInfo.userIndex}:${offerInfo.requestIndex} updated.`});
+            response.json({msg:  `Offer ${offerInfo.userIndex}:${offerInfo.requestIndex} updated.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `offer ${offerInfo.userIndex}:${offerInfo.requestIndex} not found.`});
+            response.json({msg:  `Offer ${offerInfo.userIndex}:${offerInfo.requestIndex} not found.`});
         }
     });
 
 offerRouter.delete("/", function(request, response)
     {
-        const userIndex = request.body.userIndex;
-        const requestIndex = request.body.requestIndex;
+        const userId = request.body.userIndex;
+        const requestId = request.body.requestIndex;
 
-        if (offersOfHelp.delete(userIndex, requestIndex))
-            response.json({msg:  `offer ${userIndex}:${requestIndex} deleted.`});
+        if (offersOfHelp.delete(userId, requestId))
+            response.json({msg:  `Offer ${userId}:${requestId} deleted.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `offer ${userIndex}:${requestIndex}  not found.`});
+            response.json({msg:  `Offer ${userId}:${requestId}  not found.`});
         }
     });
