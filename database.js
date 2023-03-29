@@ -107,14 +107,14 @@ users._data.trim = trimArray;
 
 requestsForHelp.create = function(requestInfo)
 {
-    const userUID = users.getUID(requestInfo.userIndex);
-    let UID = this.getUID(userUID, requestInfo.topic);
+    requestInfo.userUID = users.getUID(requestInfo.userUID);
+
+    let UID = this.getUID(requestInfo.userUID, requestInfo.topic);
 
     if (UID !== null)
         UID = null;
     else
     {
-        requestInfo.userIndex = userUID;
         UID = requestsForHelp._data.findIndex((element) => element === undefined)
 
         if (UID >= 0)
@@ -141,13 +141,11 @@ requestsForHelp.get = function(userId, topic)
 
 requestsForHelp.update = function(requestInfo)
 {
-    const userUID = requestInfo.userIndex;
-    const topic = requestInfo.topic;
-    const index = this.getUID(userUID, topic);
+    const UID = this.getUID(requestInfo.userUID, requestInfo.topic);
 
-    if (index !== null)
+    if (UID !== null)
     {
-        this._data[index] = requestInfo;
+        this._data[UID] = requestInfo;
         return true;
     }
     else
@@ -156,9 +154,9 @@ requestsForHelp.update = function(requestInfo)
 
 requestsForHelp.delete = function(userId, topic)
 {
-    const index = this.getUID(userId, topic);
+    const UID = this.getUID(userId, topic);
 
-    if (index === null)
+    if (UID === null)
         return false;
     else
     {
@@ -167,9 +165,9 @@ requestsForHelp.delete = function(userId, topic)
         associated offers of help.
         */
 
-        offersOfHelp.deleteByRequestIndex(index);
+        offersOfHelp.deleteByRequestIndex(UID);
 
-        this._data[index] = undefined;
+        this._data[UID] = undefined;
 
         return true;
     }
@@ -193,9 +191,10 @@ requestsForHelp.deleteByUserId = function(userId)
 requestsForHelp.getUID = function(userId, topic)
 {
     const userUID = users.getUID(userId);
+
     const index = requestsForHelp._data.findIndex(function(element)
         {
-            return (element !== undefined) && (element.userIndex === userUID)
+            return (element !== undefined) && (element.userUID === userUID)
                 && (element.topic === topic);
         });
 

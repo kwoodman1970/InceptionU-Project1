@@ -50,7 +50,7 @@ requestRouter.post("/", function(request, response)
         else
         {
             response.status = 403;
-            response.json({msg:  `Request ${newRequest.userIndex}:  \"${newRequest.topic}\" already in database.`});
+            response.json({msg:  `Request ${newRequest.userUID}:  \"${newRequest.topic}\" already in database.`});
         }
     });
 
@@ -83,11 +83,11 @@ requestRouter.patch("/", function(request, response)
         const requestInfo = request.body;
 
         if (requestsForHelp.update(requestInfo))
-            response.json({msg:  `Request ${requestInfo.userIndex}:  \"${requestInfo.topic}\" updated.`});
+            response.json({msg:  `Request ${requestInfo.userUID}:  \"${requestInfo.topic}\" updated.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `Request ${requestInfo.userIndex}:  \"${requestInfo.topic}\" not found.`});
+            response.json({msg:  `Request ${requestInfo.userUID}:  \"${requestInfo.topic}\" not found.`});
         }
     });
 
