@@ -19,7 +19,7 @@ function trimArray()
 
 users.create = function(userInfo)
 {
-    let UID = this.getUID(userInfo.id);
+    let UID = this.getUID(userInfo.name);
 
     if (UID !== null)
         UID = null;
@@ -51,7 +51,7 @@ users.get = function(id)
 
 users.update = function(userInfo)
 {
-    const UID = this.getUID(userInfo.id);
+    const UID = this.getUID(userInfo.name);
 
     if (UID < 0)
         return false;
@@ -86,16 +86,16 @@ users.delete = function(userId)
 
 users.getUID = function(id)
 {
-    const isAllDigits = /^\d+$/;
+    const isUID = /^\d+$/;
 
     let index = null;
 
-    if(isAllDigits.test(id))
+    if(isUID.test(id))
         index = (this._data[parseInt(id)] !== undefined ? parseInt(id) : -1);
     else
         index = this._data.findIndex(function(element)
             {
-                return (element !== undefined) && (element.id === id);
+                return (element !== undefined) && (element.name === id);
             });
 
     return (index < 0 ? null : index);

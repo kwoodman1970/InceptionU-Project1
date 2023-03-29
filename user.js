@@ -30,7 +30,7 @@ userRouter.post("/", function(request, response)
         else
         {
             response.status = 403;
-            response.json({msg:  `User \"${newUser.id}\" already in database.`});
+            response.json({msg:  `User \"${newUser.name}\" already in database.`});
         }
     });
 
@@ -55,9 +55,8 @@ userRouter.get("/:id/requests", function(request, response)
 
         if (UID != null)
         {
-            // const matches = requestsForHelp.filter((element) => (element !== null) && (element.userIndex === index));
             const allRequests = requestsForHelp.getAll();
-            const matches = allRequests.filter((element) => element.userIndex === UID);
+            const matches = allRequests.filter((element) => element.userUID === UID);
 
             response.json(matches);
         }
@@ -73,11 +72,11 @@ userRouter.patch("/", function(request, response)
         const userInfo = request.body;
 
         if (users.update(userInfo))
-            response.json({msg:  `User \"${userInfo.id}\" updated.`});
+            response.json({msg:  `User \"${userInfo.name}\" updated.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `User \"${userInfo.id}\" not found.`});
+            response.json({msg:  `User \"${userInfo.name}\" not found.`});
         }
     });
 
