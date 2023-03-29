@@ -1,0 +1,509 @@
+openapi: 3.0.0
+info:
+  title: Mentor/Protégé Connection System
+  description: A web-based system for connecting mentors with protégés.
+  version: "1.0"
+
+servers:
+  - url: http://localhost:5002
+    description: Local host
+
+paths:
+  /:
+    get:
+      summary: Detect server
+      description: Detect whether the server is running or not.
+      responses:
+        "200":
+          description: Server is running.
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /user:
+    get:
+      summary: Returns all users.
+      description: Returns a JSON array of all users.
+      responses:
+        "200":
+          description: A JSON array of user information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserInfo"
+    post:
+      summary: Add user.
+      description: Add a new user to the system.
+      requestBody:
+        description: Details of the user to be added.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInfo"
+      responses:
+        "200":
+          description: User successfully added.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UID"
+        "403":
+          description: User already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      summary: Update user.
+      description: Update information about a user.
+      requestBody:
+        description: Updated details of the user.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInfo"
+      responses:
+        "200":
+          description: User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "403":
+          description: User already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /user/{id}:
+    get:
+      summary: Returns a specific user.
+      description: Returns information the user identified by {id}.
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete user.
+      description: Removes a user from the system (as well as any requests for help and offers of help).
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: User successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /user/{id}/requests:
+    get:
+      summary: Returns all requests for help from a specific user.
+      description: Returns a JSON array of all requests for help from the user identified by {id}.
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: A JSON array of all requests for help from the user identified by {id}.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RequestInfo"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /request:
+    get:
+      summary: Returns either all requests for help or those that a specific user would be able to help with.
+      description: Returns a JSON array of requests for help.  If userId=<id> is added as a query then only requests for help that that specific user can help with are returned; otherwise, all requests are returned.
+      parameters:
+        - name: userId
+          in: query
+          description: User whose areas of expertise match certain requests for help.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A JSON array of requests for help
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RequestInfo"
+    post:
+      summary: Add a new request for help.
+      description: Add a new request for help to the system.
+      requestBody:
+        description: Details of the request for help to be added.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestInfo"
+      responses:
+        "200":
+          description: Request for help successfully added.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UID"
+        "403":
+          description: Request for help already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      summary: Update a request for help.
+      description: Update information about a request for help.
+      requestBody:
+        description: Updated details of the request for help.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestInfo"
+      responses:
+        "200":
+          description: Request for help successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "403":
+          description: Request for help already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /request/{topic}:
+    get:
+      summary: Returns all requests for help for a specific topic.
+      description: Returns a JSON array of all requests for help for {topic}.
+      parameters:
+        - name: topic
+          in: path
+          description: Topic
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: A JSON array of all requests for help for {topic}.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RequestInfo"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /request/{topic}/{id}:
+    get:
+      summary: Returns a specific request.
+      description: Returns information about the request made by user {id} for topic {topic}.
+      parameters:
+        - name: topic
+          in: path
+          description: Topic
+          schema:
+            type: string
+          required: true
+        - name: id
+          in: path
+          description: User ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Information about a request for help.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestInfo"
+        "404":
+          description: Request for help not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete a specific request for help.
+      description: Deletes the request for help from user {id} for topic {topic} (as well as any related offers of help).
+      parameters:
+        - name: topic
+          in: path
+          description: Topic
+          schema:
+            type: string
+          required: true
+        - name: id
+          in: path
+          description: User ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Request for help successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "404":
+          description: Request for help not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /offer:
+    get:
+      summary: Returns either all offers of help or just those directed at a specific user.
+      description: Returns a JSON array of offers of help.  If userId=<id> is added as a query then only offers of help for that specific user are returned; otherwise, all offers are returned.
+      parameters:
+        - name: userId
+          in: query
+          description: User to whom offers of help are directed.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A JSON array of offers of help
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OfferInfo"
+    post:
+      summary: Add a new offer of help.
+      description: Add a new offer of help to the system.
+      requestBody:
+        description: Details of the offer of help to be added.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferInfo"
+      responses:
+        "200":
+          description: Offer of help successfully added.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UID"
+        "403":
+          description: Offer of help already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      summary: Update an offer of help.
+      description: Update information about an offer of help.
+      requestBody:
+        description: Updated details of the request for help.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfferInfo"
+      responses:
+        "200":
+          description: Offer of help successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "403":
+          description: Offer of help already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /offer/{userId}/{requestId}:
+    get:
+      summary: Returns a specific offer of help.
+      description: Returns information about the offer of help made by user {userId} for request {requestId}.
+      parameters:
+        - name: userId
+          in: path
+          description: User Id
+          schema:
+            type: string
+          required: true
+        - name: requestId
+          in: path
+          description: Request for help ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Information about an offer of help.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfferInfo"
+        "404":
+          description: Offer of help not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete a specific offer of help.
+      description: Deletes an offer of help from user {userId} for request {requestId}.
+      parameters:
+        - name: userId
+          in: path
+          description: User Id
+          schema:
+            type: string
+          required: true
+        - name: requestId
+          in: path
+          description: Request for help ID
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Offer of help successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "404":
+          description: Offer of help not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+components:
+  schemas:
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        topicsCanHelpWith:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - phone
+        - email
+        - topicsCanHelpWith
+
+    RequestInfo:
+      type: object
+      properties:
+        userIndex:
+          oneOf:
+            - type: integer
+            - type: string
+        topic:
+          type: string
+        details:
+          type: string
+      required:
+        - userIndex
+        - topic
+        - details
+
+    OfferInfo:
+      type: object
+      properties:
+        userIndex:
+          oneOf:
+            - type: integer
+            - type: string
+        requestIndex:
+          oneOf:
+            - type: integer
+            - type: string
+        details:
+          type: string
+      required:
+        - userIndex
+        - requestIndex
+        - details
+
+    UID:
+      type: object
+      properties:
+        UID:
+          oneOf:
+            - type: integer
+            - type: string
+      required:
+        - UID
+
+    Message:
+      type: object
+      properties:
+        msg:
+          type: string
+      required:
+        - msg

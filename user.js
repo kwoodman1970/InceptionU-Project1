@@ -81,9 +81,9 @@ userRouter.patch("/", function(request, response)
         }
     });
 
-userRouter.delete("/", function(request, response)
+userRouter.delete("/:id", function(request, response)
     {
-        const id = request.body.id;
+        const id = request.params.id;
 
         if (users.delete(id))
             response.json({msg:  `User \"${id}\" deleted.`});

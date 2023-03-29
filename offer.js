@@ -73,10 +73,10 @@ offerRouter.patch("/", function(request, response)
         }
     });
 
-offerRouter.delete("/", function(request, response)
-    {
-        const userId = request.body.userIndex;
-        const requestId = request.body.requestIndex;
+offerRouter.delete("/:userId/:requestId", function(request, response)
+{
+    const userId = request.params.userId;
+    const requestId = request.params.requestId;
 
         if (offersOfHelp.delete(userId, requestId))
             response.json({msg:  `Offer ${userId}:${requestId} deleted.`});

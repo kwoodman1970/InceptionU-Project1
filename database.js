@@ -27,7 +27,7 @@ users.create = function(userInfo)
     {
         UID = this._data.findIndex((element) => element === undefined)
 
-        if (UID >= 0)
+        if (UID !== null)
             this._data[UID] = userInfo;
         else
         {
@@ -46,7 +46,7 @@ users.get = function(id)
 {
     const UID = this.getUID(id);
 
-    return (UID >= 0 ? this._data[UID] : null);
+    return (UID !== null ? this._data[UID] : null);
 }
 
 users.update = function(userInfo)
@@ -66,7 +66,7 @@ users.delete = function(userId)
 {
     const UID = this.getUID(userId);
 
-    if (UID >= 0)
+    if (UID !== null)
     {
         /*
         When deleting a user, it's also necessary to delete their requests for
@@ -117,7 +117,7 @@ requestsForHelp.create = function(requestInfo)
         requestInfo.userIndex = userUID;
         UID = requestsForHelp._data.findIndex((element) => element === undefined)
 
-        if (UID >= 0)
+        if (UID !== null)
             requestsForHelp._data[UID] = requestInfo;
         else
         {
@@ -136,7 +136,7 @@ requestsForHelp.get = function(userId, topic)
 {
     const UID = this.getUID(userId, topic);
 
-    return (UID >= 0 ? this._data[UID] : null);
+    return (UID !== null ? this._data[UID] : null);
 }
 
 requestsForHelp.update = function(requestInfo)
@@ -145,7 +145,7 @@ requestsForHelp.update = function(requestInfo)
     const topic = requestInfo.topic;
     const index = this.getUID(userUID, topic);
 
-    if (index >= 0)
+    if (index !== null)
     {
         this._data[index] = requestInfo;
         return true;
@@ -158,7 +158,7 @@ requestsForHelp.delete = function(userId, topic)
 {
     const index = this.getUID(userId, topic);
 
-    if (index < 0)
+    if (index === null)
         return false;
     else
     {
@@ -179,7 +179,7 @@ requestsForHelp.deleteByUserId = function(userId)
 {
     let userUID = users.getUID(userId);
 
-    if (userUID >= 0)
+    if (userUID !== null)
         this._data.forEach(function(element, index, array)
             {
                 if ((element !== undefined) && (element.userIndex === userUID))
@@ -216,7 +216,7 @@ offersOfHelp.create = function(offerInfo)
     {
         UID = offersOfHelp._data.findIndex((element) => element === undefined)
 
-        if (UID >= 0)
+        if (UID !== null)
             offersOfHelp._data[UID] = offerInfo;
         else
         {
@@ -235,7 +235,7 @@ offersOfHelp.get = function(userId, requestIndex)
 {
     const UID = this.getUID(userId, requestIndex);
 
-    return (UID >= 0 ? this._data[UID] : null);
+    return (UID !== null ? this._data[UID] : null);
 }
 
 offersOfHelp.getForUser = function(userId)

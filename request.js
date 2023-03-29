@@ -91,16 +91,16 @@ requestRouter.patch("/", function(request, response)
         }
     });
 
-requestRouter.delete("/", function(request, response)
+requestRouter.delete("/:topic/:userId", function(request, response)
     {
-        const userIndex = request.body.userIndex;
-        const topic = request.body.topic;
+        const topic = request.params.topic;
+        const userId = request.params.userId;
 
-        if (requestsForHelp.delete(userIndex, topic))
-            response.json({msg:  `Request ${userIndex}:  \"${topic}\" deleted.`});
+        if (requestsForHelp.delete(userId, topic))
+            response.json({msg:  `Request ${userId}:  \"${topic}\" deleted.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `Request ${userIndex}:  \"${topic}\"  not found.`});
+            response.json({msg:  `Request ${userId}:  \"${topic}\" not found.`});
         }
     });
