@@ -1,7 +1,7 @@
 [
     {
-        "userIndex": 0,
-        "requestIndex": 0,
+        "userUID": 0,
+        "requestUID": 0,
         "details": "I know everything there is to know about pets, and I'd be happy to help you with your puppy.  Available evenings & weekends only."
     }
 ]

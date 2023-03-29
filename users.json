@@ -1,6 +1,6 @@
 [
     {
-        "id": "Noah E. Tall",
+        "name": "Noah E. Tall",
         "phone": "403-555-5000",
         "email": "noahtall@utopia.com",
         "topicsCanHelpWith": [
@@ -10,7 +10,7 @@
         ]
     },
     {
-        "id": "Anita Hand",
+        "name": "Anita Hand",
         "phone": "403-555-5001",
         "email": "anitahand@null.com",
         "topicsCanHelpWith": []

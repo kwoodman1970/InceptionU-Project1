@@ -84,11 +84,11 @@ paths:
   /user/{id}:
     get:
       summary: Returns a specific user.
-      description: Returns information the user identified by {id}.
+      description: Returns information about the user identified by {id}.
       parameters:
         - name: id
           in: path
-          description: User ID
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
@@ -111,7 +111,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: User ID
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
@@ -136,7 +136,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: User ID
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
@@ -163,7 +163,7 @@ paths:
       parameters:
         - name: userId
           in: query
-          description: User whose areas of expertise match certain requests for help.
+          description: User whose areas of expertise match certain requests for help (name or UID).
           schema:
             type: string
       responses:
@@ -243,7 +243,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/RequestInfo"
         "404":
-          description: User not found.
+          description: Request for help not found.
           content:
             application/json:
               schema:
@@ -262,7 +262,7 @@ paths:
           required: true
         - name: id
           in: path
-          description: User ID
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
@@ -291,7 +291,7 @@ paths:
           required: true
         - name: id
           in: path
-          description: User ID
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
@@ -316,7 +316,7 @@ paths:
       parameters:
         - name: userId
           in: query
-          description: User to whom offers of help are directed.
+          description: User to whom offers of help are directed (name or UID).
           schema:
             type: string
       responses:
@@ -382,13 +382,13 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: User Id
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
         - name: requestId
           in: path
-          description: Request for help ID
+          description: Request for help UID
           schema:
             type: string
           required: true
@@ -411,13 +411,13 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: User Id
+          description: User ID (name or UID)
           schema:
             type: string
           required: true
         - name: requestId
           in: path
-          description: Request for help ID
+          description: Request for help (UID)
           schema:
             type: string
           required: true
@@ -440,7 +440,7 @@ components:
     UserInfo:
       type: object
       properties:
-        id:
+        name:
           type: string
         phone:
           type: string
@@ -451,7 +451,7 @@ components:
           items:
             type: string
       required:
-        - id
+        - name
         - phone
         - email
         - topicsCanHelpWith
@@ -459,7 +459,7 @@ components:
     RequestInfo:
       type: object
       properties:
-        userIndex:
+        userUID:
           oneOf:
             - type: integer
             - type: string
@@ -468,26 +468,26 @@ components:
         details:
           type: string
       required:
-        - userIndex
+        - userUID
         - topic
         - details
 
     OfferInfo:
       type: object
       properties:
-        userIndex:
+        userUID:
           oneOf:
             - type: integer
             - type: string
-        requestIndex:
+        requestUID:
           oneOf:
             - type: integer
             - type: string
         details:
           type: string
       required:
-        - userIndex
-        - requestIndex
+        - userUID
+        - requestUID
         - details
 
     UID:
