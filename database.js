@@ -27,7 +27,7 @@ users.create = function(userInfo)
     {
         UID = this._data.findIndex((element) => element === undefined)
 
-        if (UID !== null)
+        if (UID >= 0)
             this._data[UID] = userInfo;
         else
         {
@@ -117,7 +117,7 @@ requestsForHelp.create = function(requestInfo)
         requestInfo.userIndex = userUID;
         UID = requestsForHelp._data.findIndex((element) => element === undefined)
 
-        if (UID !== null)
+        if (UID >= 0)
             requestsForHelp._data[UID] = requestInfo;
         else
         {
@@ -216,7 +216,7 @@ offersOfHelp.create = function(offerInfo)
     {
         UID = offersOfHelp._data.findIndex((element) => element === undefined)
 
-        if (UID !== null)
+        if (UID >= 0)
             offersOfHelp._data[UID] = offerInfo;
         else
         {
