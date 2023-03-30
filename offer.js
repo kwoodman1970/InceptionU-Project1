@@ -40,23 +40,23 @@ offerRouter.post("/", function(request, response)
         else
         {
             response.status = 403;
-            response.json({msg:  `Offer ${newOffer.userIndex}:${newOffer.requestIndex} already in database.`});
+            response.json({msg:  `Offer ${newOffer.userUID}:${newOffer.requestUID} already in database.`});
         }
     });
 
-offerRouter.get("/:userId/:requestId", function(request, response)
+offerRouter.get("/:userId/:requestUID", function(request, response)
     {
         const userId = request.params.userId;
-        const requestId = request.params.requestId;
+        const requestUID = request.params.requestUID;
 
-        let offer = offersOfHelp.get(userId, requestId);
+        let offer = offersOfHelp.get(userId, requestUID);
 
         if (offer !== null)
             response.json(offer);
         else
         {
             response.status = 404;
-            response.json({msg:  `Offer ${userId}:${requestId} not found.`});
+            response.json({msg:  `Offer ${userId}:${requestUID} not found.`});
         }
     });
 
@@ -65,24 +65,24 @@ offerRouter.patch("/", function(request, response)
         const offerInfo = request.body;
 
         if (offersOfHelp.update(offerInfo))
-            response.json({msg:  `Offer ${offerInfo.userIndex}:${offerInfo.requestIndex} updated.`});
+            response.json({msg:  `Offer ${offerInfo.userUID}:${offerInfo.requestUID} updated.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `Offer ${offerInfo.userIndex}:${offerInfo.requestIndex} not found.`});
+            response.json({msg:  `Offer ${offerInfo.userUID}:${offerInfo.requestUID} not found.`});
         }
     });
 
-offerRouter.delete("/:userId/:requestId", function(request, response)
+offerRouter.delete("/:userId/:requestUID", function(request, response)
 {
     const userId = request.params.userId;
-    const requestId = request.params.requestId;
+    const requestUID = request.params.requestUID;
 
-        if (offersOfHelp.delete(userId, requestId))
-            response.json({msg:  `Offer ${userId}:${requestId} deleted.`});
+        if (offersOfHelp.delete(userId, requestUID))
+            response.json({msg:  `Offer ${userId}:${requestUID} deleted.`});
         else
         {
             response.status = 404;
-            response.json({msg:  `Offer ${userId}:${requestId}  not found.`});
+            response.json({msg:  `Offer ${userId}:${requestUID}  not found.`});
         }
     });

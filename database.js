@@ -165,7 +165,7 @@ requestsForHelp.delete = function(userId, topic)
         associated offers of help.
         */
 
-        offersOfHelp.deleteByRequestIndex(UID);
+        offersOfHelp.deleteByRequestUID(UID);
 
         this._data[UID] = undefined;
 
@@ -180,9 +180,9 @@ requestsForHelp.deleteByUserId = function(userId)
     if (userUID !== null)
         this._data.forEach(function(element, index, array)
             {
-                if ((element !== undefined) && (element.userIndex === userUID))
+                if ((element !== undefined) && (element.userUID === userUID))
                 {
-                    offersOfHelp.deleteByRequestIndex(index);
+                    offersOfHelp.deleteByRequestUID(index);
                     array[index] = undefined
                 }
             });
@@ -207,7 +207,7 @@ requestsForHelp._data.trim = trimArray;
 
 offersOfHelp.create = function(offerInfo)
 {
-    let UID = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
+    let UID = this.getUID(offerInfo.userUID, offerInfo.requestUID);
 
     if (UID !== null)
         UID = null;
@@ -230,9 +230,9 @@ offersOfHelp.create = function(offerInfo)
 offersOfHelp.getAll = function()
     {return this._data.filter((element) => element !== undefined);}
 
-offersOfHelp.get = function(userId, requestIndex)
+offersOfHelp.get = function(userId, requestUID)
 {
-    const UID = this.getUID(userId, requestIndex);
+    const UID = this.getUID(userId, requestUID);
 
     return (UID !== null ? this._data[UID] : null);
 }
@@ -242,16 +242,18 @@ offersOfHelp.getForUser = function(userId)
     const allOffers = this.getAll();
     const userUID = users.getUID(userId);
 
-    return allOffers.filter((element) => requestsForHelp._data[element.requestIndex].userIndex === userUID);
+    console.log(`User Id is \"${userId}\", user UID is ${userUID}`);
+
+    return allOffers.filter((element) => requestsForHelp._data[element.requestUID].userUID === userUID);
 }
 
 offersOfHelp.update = function(offerInfo)
 {
-    let index = this.getUID(offerInfo.userIndex, offerInfo.requestIndex);
+    let UID = this.getUID(offerInfo.userUID, offerInfo.requestUID);
 
-    if (index !== null)
+    if (UID !== null)
     {
-        this._data[index] = offerInfo;
+        this._data[UID] = offerInfo;
         return true;
     }
     else
@@ -260,11 +262,11 @@ offersOfHelp.update = function(offerInfo)
 
 offersOfHelp.delete = function(userId, requestIndex)
 {
-    let index = this.getUID(userId, requestIndex);
+    let UID = this.getUID(userId, requestIndex);
 
-    if (index !== null)
+    if (UID !== null)
     {
-        this._data[index] = undefined;
+        this._data[UID] = undefined;
         return true;
     }
     else
@@ -278,31 +280,31 @@ offersOfHelp.deleteByUserId = function(userId)
     if (userUID !== null)
         this._data.forEach(function(element, index, array)
             {
-                if ((element !== undefined) && (element.userIndex === userUID))
+                if ((element !== undefined) && (element.userUID === userUID))
                     array[index] = undefined
             });
 }
 
-offersOfHelp.deleteByRequestIndex = function(requestIndex)
+offersOfHelp.deleteByRequestUID = function(requestUID)
 {
-    if (requestIndex >= 0)
+    if (requestUID >= 0)
         this._data.forEach(function(element, index, array)
             {
-                if ((element !== undefined) && (element.requestIndex === requestIndex))
+                if ((element !== undefined) && (element.requestUID === requestUID))
                     array[index] = undefined
             });
 }
 
-offersOfHelp.getUID = function(userId, requestIndex)
+offersOfHelp.getUID = function(userId, requestUID)
 {
-    const userIndex = users.getUID(userId);
-    const index = offersOfHelp._data.findIndex(function(element)
+    const userUID = users.getUID(userId);
+    const UID = offersOfHelp._data.findIndex(function(element)
         {
-            return (element !== undefined) && (element.userIndex === userIndex)
-                && (element.requestIndex === parseInt(requestIndex));
+            return (element !== undefined) && (element.userUID === userUID)
+                && (element.requestUID === parseInt(requestUID));
         });
 
-    return (index < 0 ? null : index);
+    return (UID < 0 ? null : UID);
 };
 
 offersOfHelp._data.trim = trimArray;
