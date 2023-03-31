@@ -71,39 +71,45 @@ users.get = async function(id)
     return userInfo;
 }
 
-users.update = function(userInfo)
+users.update = async function(userInfo)
 {
-    const UID = this.getUID(userInfo.name);
+    const UID = await this.getUID(userInfo.name);
 
-    if (UID < 0)
+    if (UID === null)
         return false;
     else
     {
-        this._data[UID] = userInfo;
-        return true;
+        const updatedUserInfo = await this._data.findByIdAndUpdate(UID, userInfo);
+
+        return (updatedUserInfo !== null);
     }
 }
 
-users.delete = function(userId)
+users.delete = async function(userId)
 {
-    const UID = this.getUID(userId);
+    const UID = await this.getUID(userId);
 
-    if (UID !== null)
-    {
-        /*
-        When deleting a user, it's also necessary to delete their requests for
-        help and their offers of help.
-        */
-
-        requestsForHelp.deleteByUserId(UID);
-        offersOfHelp.deleteByUserId(UID);
-
-        this._data[UID] = undefined;
-
-        return true;
-    }
-    else
+    if (UID === null)
         return false;
+    else
+    {
+        const deletedUserInfo = await this._data.findByIdAndDelete(UID);
+
+        if (deletedUserInfo !== null)
+        {
+            /*
+            When deleting a user, it's also necessary to delete their requests for
+            help and their offers of help.
+            */
+
+            // requestsForHelp.deleteByUserId(UID);
+            // offersOfHelp.deleteByUserId(UID);
+
+            return true;
+        }
+        else
+            return false;
+    }
 }
 
 users.getUID = async function(id)
@@ -111,24 +117,12 @@ users.getUID = async function(id)
     let UID = null;
 
     if(isUID.test(id))
-    {
         UID = id;
-    }
     else
     {
-        try
-        {
-            const userInfo = await this._data.findOne({name:  id}).exec();
+        const userInfo = await this._data.findOne({name:  id}).exec();
 
-            UID = userInfo._id;
-        }
-        catch (error)
-        {
-            const ERROR_DOCUMENT_EXISTS = 11000;
-
-            if (error.code !== ERROR_DOCUMENT_EXISTS)
-                throw error;
-        }
+        UID = (userInfo !== null ? userInfo._id : null);
     }
 
     return UID;

@@ -25,8 +25,6 @@ userRouter.post("/", async function(request, response)
 
         const UID = await users.create(newUser);
 
-        console.log(`UID is ${UID}`);
-
         if (UID !== null)
             response.json({"UID":  UID});
         else
@@ -69,11 +67,11 @@ userRouter.get("/:id/requests", function(request, response)
         }
     });
 
-userRouter.patch("/", function(request, response)
+userRouter.patch("/", async function(request, response)
     {
         const userInfo = request.body;
 
-        if (users.update(userInfo))
+        if (await users.update(userInfo))
             response.json({msg:  `User \"${userInfo.name}\" updated.`});
         else
         {
@@ -82,11 +80,11 @@ userRouter.patch("/", function(request, response)
         }
     });
 
-userRouter.delete("/:id", function(request, response)
+userRouter.delete("/:id", async function(request, response)
     {
         const id = request.params.id;
 
-        if (users.delete(id))
+        if (await users.delete(id))
             response.json({msg:  `User \"${id}\" deleted.`});
         else
         {
