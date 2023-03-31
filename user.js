@@ -17,13 +17,15 @@ const requestsForHelp = imports.requestsForHelp;
 
 export const userRouter = express.Router();
 
-userRouter.get("/", (request, response) => response.send(users.getAll()));
+userRouter.get("/", async (request, response) => response.send(await users.getAll()));
 
-userRouter.post("/", function(request, response)
+userRouter.post("/", async function(request, response)
     {
         const newUser = request.body;
 
-        const UID = users.create(newUser);
+        const UID = await users.create(newUser);
+
+        console.log(`UID is ${UID}`);
 
         if (UID !== null)
             response.json({"UID":  UID});
@@ -34,10 +36,10 @@ userRouter.post("/", function(request, response)
         }
     });
 
-userRouter.get("/:id", function(request, response)
+userRouter.get("/:id", async function(request, response)
     {
         const id = request.params.id;
-        const userInfo = users.get(id);
+        const userInfo = await users.get(id);
 
         if ((userInfo != null))
             response.json(userInfo);
