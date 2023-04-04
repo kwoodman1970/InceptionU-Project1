@@ -78,11 +78,11 @@ requestRouter.get("/:topic/:userId", function(request, response)
         }
     });
 
-requestRouter.patch("/", function(request, response)
+requestRouter.patch("/", async function(request, response)
     {
         const requestInfo = request.body;
 
-        if (requestsForHelp.update(requestInfo))
+        if (await requestsForHelp.update(requestInfo))
             response.json({msg:  `Request ${requestInfo.userUID}:  \"${requestInfo.topic}\" updated.`});
         else
         {

@@ -159,17 +159,16 @@ requestsForHelp.get = function(userId, topic)
     return (UID !== null ? this._data[UID] : null);
 }
 
-requestsForHelp.update = function(requestInfo)
+requestsForHelp.update = async function(requestInfo)
 {
-    const UID = this.getUID(requestInfo.userUID, requestInfo.topic);
+    requestInfo.userUID = await users.getUID(requestInfo.userUID);
 
-    if (UID !== null)
-    {
-        this._data[UID] = requestInfo;
-        return true;
-    }
-    else
-        return false;
+    delete requestInfo._id;
+
+    const query = {userId:  requestInfo.userId, topic:  requestInfo.topic};
+    const updatedRequestInfo = await this._data.findOneAndUpdate(query, requestInfo);
+
+    return (updatedRequestInfo !== null);
 }
 
 requestsForHelp.delete = function(userId, topic)
