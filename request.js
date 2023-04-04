@@ -17,14 +17,14 @@ const requestsForHelp = imports.requestsForHelp;
 
 export const requestRouter = express.Router();
 
-requestRouter.get("/", function(request, response)
+requestRouter.get("/", async function(request, response)
     {
         const userId = request.query.userId;
-        const allRequests = requestsForHelp.getAll();
+        const allRequests = await requestsForHelp.getAll();
 
         if (userId !== undefined)
         {
-            const userInfo = users.get(request.query.userId);
+            const userInfo = await users.get(request.query.userId);
 
             if (userInfo !== null)
             {
@@ -39,11 +39,11 @@ requestRouter.get("/", function(request, response)
             response.json(allRequests);
     });
 
-requestRouter.post("/", function(request, response)
+requestRouter.post("/", async function(request, response)
     {
         const newRequest = request.body;
 
-        const UID = requestsForHelp.create(newRequest);
+        const UID = await requestsForHelp.create(newRequest);
 
         if (UID !== null)
             response.json({"UID":  UID});
@@ -54,10 +54,10 @@ requestRouter.post("/", function(request, response)
         }
     });
 
-requestRouter.get("/:topic", function(request, response)
+requestRouter.get("/:topic", async function(request, response)
     {
         const topic = request.params.topic;
-        const allRequests = requestsForHelp.getAll();
+        const allRequests = await requestsForHelp.getAll();
         const matches = allRequests.filter((element) => element.topic === topic);
 
         response.json(matches);

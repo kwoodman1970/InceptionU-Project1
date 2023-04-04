@@ -13,15 +13,15 @@ const userSchema = mongoose.Schema(
 
 const requestsForHelpSchema = mongoose.Schema(
     {
-        userUID:  {type:  Number, required: true, unique:  true},
+        userUID:  {type:  String, required: true, unique:  true},
         topic:  {type:  String, required: true, unique:  true},
         details:  String
     });
 
 const offersOfHelpSchema = mongoose.Schema(
     {
-        userUID:  {type:  Number, required: true, unique:  true},
-        requestUID:  {type:  Number, required: true, unique:  true},
+        userUID:  {type:  String, required: true, unique:  true},
+        requestUID:  {type:  String, required: true, unique:  true},
         details:  String
     });
 
@@ -58,10 +58,7 @@ users.create = async function(userInfo)
     return UID;
 };
 
-users.getAll = async function()
-{
-    return await this._data.find();
-};
+users.getAll = async function() {return await this._data.find();};
 
 users.get = async function(id)
 {
@@ -126,6 +123,102 @@ users.getUID = async function(id)
     }
 
     return UID;
+};
+
+// Requests for help CRUD
+
+requestsForHelp.create = async function(requestInfo)
+{
+    let UID = null;
+
+    requestInfo.userUID = await users.getUID(requestInfo.userUID);
+
+    try
+    {
+        const newRequestInfo = await this._data.create(requestInfo);
+
+        UID = newRequestInfo._id;
+    }
+    catch (error)
+    {
+        const ERROR_DOCUMENT_EXISTS = 11000;
+
+        if (error.code !== ERROR_DOCUMENT_EXISTS)
+            throw error;
+    }
+
+    return UID;
+};
+
+requestsForHelp.getAll = async function() {return await this._data.find();};
+
+requestsForHelp.get = function(userId, topic)
+{
+    const UID = this.getUID(userId, topic);
+
+    return (UID !== null ? this._data[UID] : null);
+}
+
+requestsForHelp.update = function(requestInfo)
+{
+    const UID = this.getUID(requestInfo.userUID, requestInfo.topic);
+
+    if (UID !== null)
+    {
+        this._data[UID] = requestInfo;
+        return true;
+    }
+    else
+        return false;
+}
+
+requestsForHelp.delete = function(userId, topic)
+{
+    const UID = this.getUID(userId, topic);
+
+    if (UID === null)
+        return false;
+    else
+    {
+        /*
+        When deleting a reqeust for help, it's also necessary to delete any
+        associated offers of help.
+        */
+
+        offersOfHelp.deleteByRequestUID(UID);
+
+        this._data[UID] = undefined;
+
+        return true;
+    }
+}
+
+requestsForHelp.deleteByUserId = function(userId)
+{
+    let userUID = users.getUID(userId);
+
+    if (userUID !== null)
+        this._data.forEach(function(element, index, array)
+            {
+                if ((element !== undefined) && (element.userUID === userUID))
+                {
+                    offersOfHelp.deleteByRequestUID(index);
+                    array[index] = undefined
+                }
+            });
+}
+
+requestsForHelp.getUID = function(userId, topic)
+{
+    const userUID = users.getUID(userId);
+
+    const index = requestsForHelp._data.findIndex(function(element)
+        {
+            return (element !== undefined) && (element.userUID === userUID)
+                && (element.topic === topic);
+        });
+
+    return (index < 0 ? null : index);
 };
 
 process.on("SIGINT", function (exitCode)
