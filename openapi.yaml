@@ -57,29 +57,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Message"
-    patch:
-      summary: Update user.
-      description: Update information about a user.
-      requestBody:
-        description: Updated details of the user.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserInfo"
-      responses:
-        "200":
-          description: User successfully updated.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
-        "403":
-          description: User already exists.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
 
   /user/{id}:
     get:
@@ -99,6 +76,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfo"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      summary: Update user.
+      description: Update information about the user identified by {id}.
+      parameters:
+        - name: id
+          in: path
+          description: User ID (name or UID)
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: Updated details of the user.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInfo"
+      responses:
+        "200":
+          description: User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
         "404":
           description: User not found.
           content:
