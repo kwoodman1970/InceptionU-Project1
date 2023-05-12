@@ -1,4 +1,8 @@
 import express from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import {userRouter} from "./user.js";
 import {requestRouter} from "./request.js";
 import {offerRouter} from "./offer.js";

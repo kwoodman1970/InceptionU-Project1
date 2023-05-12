@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 
+dotenv.config();
+
 const isUID = /^[0-9a-f]{24}$/;
 
 const userSchema = mongoose.Schema(
@@ -24,8 +26,6 @@ const offersOfHelpSchema = mongoose.Schema(
         requestUID:  {type:  String, required: true, unique:  true},
         details:  String
     });
-
-dotenv.config();
 
 const db = await mongoose.connect(process.env.MONGO_URL).catch((error) => console.log("Connection to MongoDB failed."));
 
@@ -171,11 +171,14 @@ requestsForHelp.update = async function(requestInfo)
     return (updatedRequestInfo !== null);
 }
 
-requestsForHelp.delete = function(userId, topic)
+requestsForHelp.delete = async function(userId, topic)
 {
-    const UID = this.getUID(userId, topic);
+    const userUID = await users.getUID(userId);
+    const deletedRequestInfo = await this._data.findOneAndDelete({userUID:  userUID, topic:  topic});
 
-    if (UID === null)
+    console.log(`Deleted request:  \"${JSON.stringify(deletedRequestInfo)}\"`);
+
+    if (deletedRequestInfo === null)
         return false;
     else
     {
@@ -184,40 +187,27 @@ requestsForHelp.delete = function(userId, topic)
         associated offers of help.
         */
 
-        offersOfHelp.deleteByRequestUID(UID);
-
-        this._data[UID] = undefined;
+        // offersOfHelp.deleteByRequestUID(UID);
 
         return true;
     }
 }
 
-requestsForHelp.deleteByUserId = function(userId)
+requestsForHelp.deleteByUserId = async function(userId)
 {
-    let userUID = users.getUID(userId);
+    let userUID = await users.getUID(userId);
 
     if (userUID !== null)
-        this._data.forEach(function(element, index, array)
-            {
-                if ((element !== undefined) && (element.userUID === userUID))
-                {
-                    offersOfHelp.deleteByRequestUID(index);
-                    array[index] = undefined
-                }
-            });
+        await this._data.deleteMany({userId:  userUID}).exec();
 }
 
-requestsForHelp.getUID = function(userId, topic)
+requestsForHelp.getUID = async function(userId, topic)
 {
-    const userUID = users.getUID(userId);
+    const requestInfo = await this._data.findOne({userId:  userId, topic:  topic}).exec();
 
-    const index = requestsForHelp._data.findIndex(function(element)
-        {
-            return (element !== undefined) && (element.userUID === userUID)
-                && (element.topic === topic);
-        });
+    console.log(`requestInfo is ${JSON.stringify(requestInfo)}`);
 
-    return (index < 0 ? null : index);
+    return (requestInfo !== null ? requestInfo._id : null);
 };
 
 process.on("SIGINT", function (exitCode)

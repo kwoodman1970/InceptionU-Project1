@@ -91,12 +91,12 @@ requestRouter.patch("/", async function(request, response)
         }
     });
 
-requestRouter.delete("/:topic/:userId", function(request, response)
+requestRouter.delete("/:topic/:userId", async function(request, response)
     {
         const topic = request.params.topic;
         const userId = request.params.userId;
 
-        if (requestsForHelp.delete(userId, topic))
+        if (await requestsForHelp.delete(userId, topic))
             response.json({msg:  `Request ${userId}:  \"${topic}\" deleted.`});
         else
         {
