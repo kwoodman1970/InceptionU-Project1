@@ -1,21 +1,73 @@
 # InceptionU Project 1 &ndash; Mentor/Protégé Connection System
 
+**Status:**  Suspended<br />
+*Active development is temporarily on hold.*
+
+## About This Project
+
+This was my submission for Project 1 in the [Full Stack Developer](https://www.inceptionu.com/full-stack-developer-program/) program at [InceptionU](https://www.inceptionu.com/).
+
+### The Assignment
+
+### The Result
+
 Many years ago (long before there was any social media), I attended a break-out session on the subject of mentorship.  I then started thinking about a system where people with a need to learn could meet up with people who had the desire to teach.
 
 This project is a proof-of-concept of how mentors and protégés can connect.  It implements a back-end for a web-based system and uses [Node.js](https://nodejs.org/).
 
-## Getting Started
+## How to Install
 
-To prepare, start by cloning this repository and installing the node packages.  Next, create a text file in the `code` directory called `.env` and put the following line in:
+### Prerequisites
 
-`DB=JSON`
+You will need:
 
-## Starting the Server
+- [npm](https://www.npmjs.com/package/npm)
+- a program like [Postman](https://www.postman.com/downloads/) or [cURL](https://curl.se/) to send the different kinds of HTTP requests and receive the different kinds of responses
 
-To start the server, change to the `code` directory and issue the following command:
+### Installation
+
+Use the green `<> Code` button to either clone this repository or download the zip file.
+
+Next, create a text file in your local project directory called `.env` and add the following content:
+
+```
+DB=JSON
+```
+
+Next, install the necessary JavaScript packages executing this command:
+
+```
+npm install
+```
+
+## How to Use
+
+To start the server, issue the following command:
 
 `node server.js`
 
-## Future Tasks
+Note the port number that's displayed (5002 is pre-set, but it can be changed).  You can now use Postman or cURL to send HTTP requests to `localhost:5002` and receive responses.
 
-This system currently uses JSON files stored locally, but is capable of connecting to other data sources.  I'd like to add the ability to connect to MongoDB in particular.  I'd like to do this before Cohort 10 at InceptionU draws to a close.
+To stop the server, type `Ctrl-C` or send a SIGINT signal to it.
+
+## Documentation
+
+The back end supports full CRUD functionality for users, requests for help and offers of help.
+
+See the [openapi.yaml](openapi.yaml) file for the complete API specification.  **TIP:**  open this file in an [Open API Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/kwoodman1970/InceptionU-Project1/main/openapi.yaml) for easier viewing.
+
+## Technologies Used
+
+- [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
+- [fs.js](https://www.npmjs.com/package/fs-js)
+- [HTTP requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
+- [OpenAPI](https://www.openapis.org/) (YAML)
+
+## TODO
+
+This system currently uses JSON files stored locally, but is capable of connecting to other data sources.  Support for MongoDB is currently being developed.
+
+## How to Contribute
+
+I'm not accepting contributions to this project.
