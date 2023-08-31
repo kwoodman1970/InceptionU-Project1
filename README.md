@@ -9,11 +9,20 @@ This was my submission for Project 1 in the [Full Stack Developer](https://www.i
 
 ### The Assignment
 
+The goal of Project 1 was to for each learner to make their thinking visible and build a functional API through iteration &amp; feedback cycles &ndash; in particular, to create a text-based interactive application with JavaScript and [Express.js](https://expressjs.com/) using *only* HTTP API's.
+
+We were given additional features to strive for, such as:
+
+- use additional HTTP methods (like PUT and POST)
+- maintain state between HTTP requests
+- implement persistent storage
+- document the API
+
 ### The Result
 
 Many years ago (long before there was any social media), I attended a break-out session on the subject of mentorship.  I then started thinking about a system where people with a need to learn could meet up with people who had the desire to teach.
 
-This project is a proof-of-concept of how mentors and protégés can connect.  It implements a back-end for a web-based system and uses [Node.js](https://nodejs.org/).
+This project is a proof-of-concept of how mentors and protégés can connect.  It implements a back end for a web-based system and uses [Node.js](https://nodejs.org/).  Users can make requests for help and offers of help.  Full [CRUD functionality](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) is implemented and data is stored locally in JSON files.  Finally, the API is completely specified in an [OpenAPI](https://www.openapis.org/) (YAML) file.
 
 ## How to Install
 
@@ -34,7 +43,7 @@ Next, create a text file in your local project directory called `.env` and add t
 DB=JSON
 ```
 
-Next, install the necessary JavaScript packages executing this command:
+Next, install the necessary JavaScript packages by executing this command from your local project directory:
 
 ```
 npm install
@@ -42,7 +51,7 @@ npm install
 
 ## How to Use
 
-To start the server, issue the following command:
+To start the server, issue the following command from your local project directory:
 
 `node server.js`
 
@@ -52,9 +61,7 @@ To stop the server, type `Ctrl-C` or send a SIGINT signal to it.
 
 ## Documentation
 
-The back end supports full CRUD functionality for users, requests for help and offers of help.
-
-See the [openapi.yaml](openapi.yaml) file for the complete API specification.  **TIP:**  open this file in an [Open API Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/kwoodman1970/InceptionU-Project1/main/openapi.yaml) for easier viewing.
+See the [openapi.yaml](openapi.yaml) file for the complete API specification.  **TIP:**  open this file in an [OpenAPI Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/kwoodman1970/InceptionU-Project1/main/openapi.yaml) for easier viewing.
 
 ## Technologies Used
 
