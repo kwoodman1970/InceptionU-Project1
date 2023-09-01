@@ -5,7 +5,7 @@
 
 ## About This Project
 
-This was my submission for Project 1 in the [Full Stack Developer](https://www.inceptionu.com/full-stack-developer-program/) program at [InceptionU](https://www.inceptionu.com/).
+This was my submission for Project 1 in the [Full Stack Developer](https://www.inceptionu.com/full-stack-developer-program/) program at [InceptionU](https://www.inceptionu.com/) (we were given three projects altogether).
 
 ### The Assignment
 
@@ -22,7 +22,7 @@ We were given additional features to strive for, such as:
 
 Many years ago (long before there was any social media), I attended a break-out session on the subject of mentorship.  I then started thinking about a system where people with a need to learn could meet up with people who had the desire to teach.
 
-This project is a proof-of-concept of how mentors and protégés can connect.  It implements a back end for a web-based system and uses [Node.js](https://nodejs.org/).  Users can make requests for help and offers of help.  Full [CRUD functionality](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) is implemented and data is stored locally in JSON files.  Finally, the API is completely specified in an [OpenAPI](https://www.openapis.org/) (YAML) file.
+This project is a proof-of-concept of how mentors and protégés can connect.  Users can make requests for help and offers of help.  Full [CRUD functionality](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) is implemented and data is stored locally in [JSON](https://www.json.org/json-en.html) files.  Finally, the API is completely specified in an [OpenAPI](https://www.openapis.org/) ([YAML](https://yaml.org/)) file.
 
 ## How to Install
 
@@ -37,13 +37,13 @@ You will need:
 
 Use the green `<> Code` button to either clone this repository or download the zip file.
 
-Next, create a text file in your local project directory called `.env` and add the following content:
+Next, open a command shell and change to the `code` directory.  Create a text file called `.env` with the following content:
 
 ```
 DB=JSON
 ```
 
-Next, install the necessary JavaScript packages by executing this command from your local project directory:
+Next, install the necessary JavaScript packages by executing this command:
 
 ```
 npm install
@@ -51,11 +51,11 @@ npm install
 
 ## How to Use
 
-To start the server, issue the following command from your local project directory:
+To start the back end, open a command shell and change to the `code` directory, then enter the following command:
 
 `node server.js`
 
-Note the port number that's displayed (5002 is pre-set, but it can be changed).  You can now use Postman or cURL to send HTTP requests to `localhost:5002` and receive responses.
+Note the port number that's displayed (5002 is pre-set, but it can be changed).  You can now use [Postman](https://www.postman.com/downloads/) or [cURL](https://curl.se/) to send HTTP requests to `localhost:5002` and receive responses.
 
 To stop the server, type `Ctrl-C` or send a SIGINT signal to it.
 
@@ -69,11 +69,11 @@ See the [openapi.yaml](openapi.yaml) file for the complete API specification.  *
 - [Express.js](https://expressjs.com/)
 - [fs.js](https://www.npmjs.com/package/fs-js)
 - [HTTP requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
-- [OpenAPI](https://www.openapis.org/) (YAML)
+- [OpenAPI](https://www.openapis.org/) ([YAML](https://yaml.org/))
 
 ## TODO
 
-This system currently uses JSON files stored locally, but is capable of connecting to other data sources.  Support for MongoDB is currently being developed.
+This system currently uses [JSON](https://www.json.org/json-en.html) files stored locally, but is capable of connecting to other data sources.  Support for [MongoDB](https://www.mongodb.com/) is currently being developed.
 
 ## How to Contribute
 
@@ -81,6 +81,6 @@ I'm not accepting contributions to this project.
 
 ## Copyright Notice
 
-The files in this repository are made available under the [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users).  Beyond that, I reserve all other rights.
+The files in this repository are made available under the [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users).  Beyond that, I [reserve all other rights](https://choosealicense.com/no-permission/).
 
-Copyright © 2023 Kevin Woodman
+Copyright &copy; 2023 Kevin Woodman
