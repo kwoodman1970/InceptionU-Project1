@@ -78,3 +78,9 @@ This system currently uses JSON files stored locally, but is capable of connecti
 ## How to Contribute
 
 I'm not accepting contributions to this project.
+
+## Copyright Notice
+
+The files in this repository are made available under the [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#5-license-grant-to-other-users).  Beyond that, I reserve all other rights.
+
+Copyright © 2023 Kevin Woodman
