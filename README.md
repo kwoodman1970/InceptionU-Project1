@@ -53,7 +53,9 @@ npm install
 
 To start the back end, open a command shell and change to the `code` directory, then enter the following command:
 
-`node server.js`
+```
+node server.js
+```
 
 Note the port number that's displayed (5002 is pre-set, but it can be changed).  You can now use [Postman](https://www.postman.com/downloads/) or [cURL](https://curl.se/) to send HTTP requests to `localhost:5002` and receive responses.
 
