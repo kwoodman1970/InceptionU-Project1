@@ -5,7 +5,7 @@
 
 ## About This Project
 
-This was my submission for Project 1 in the [Full Stack Developer](https://www.inceptionu.com/full-stack-developer-program/) program at [InceptionU](https://www.inceptionu.com/) (we were given three projects altogether).
+This was my submission for Project 1 in the [Full Stack Developer](https://www.inceptionu.com/full-stack-developer-program/) program at [InceptionU](https://www.inceptionu.com/) (we were given three projects to do altogether).
 
 ### The Assignment
 
