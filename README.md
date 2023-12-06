@@ -1,7 +1,7 @@
 # InceptionU Project 1 &ndash; Mentor/Protégé Connection System
 
 **Status:**  Suspended<br />
-*Active development is temporarily on hold.*
+*This project is not being actively developed at this time but will be revisited in the near future.*
 
 ## About This Project
 
@@ -75,7 +75,7 @@ See the [openapi.yaml](openapi.yaml) file for the complete API specification.  *
 
 ## TODO
 
-This system currently uses [JSON](https://www.json.org/json-en.html) files stored locally, but is capable of connecting to other data sources.  Support for [MongoDB](https://www.mongodb.com/) is currently being developed.
+- Finish adding support for [MongoDB](https://www.mongodb.com/).
 
 ## How to Contribute
 
